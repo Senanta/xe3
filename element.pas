@@ -16,7 +16,6 @@ type
     btSave: TButton;
     ActionList1: TActionList;
     ActionSave: TAction;
-    Edit1: TEdit;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
   private
