@@ -1,0 +1,17 @@
+program Senanta;
+
+uses
+  Forms,
+  Main in 'Main.pas' {MainForm},
+  element in 'element.pas' {TFormElement},
+  about in 'about.pas' {AboutBox},
+  element_list in 'element_list.pas' {TFormElementList};
+
+{$R *.RES}
+
+begin
+  Application.Initialize;
+  Application.CreateForm(TMainForm, MainForm);
+  Application.CreateForm(TAboutBox, AboutBox);
+  Application.Run;
+end.

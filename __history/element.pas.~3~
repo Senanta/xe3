@@ -1,0 +1,32 @@
+unit element;
+
+interface
+
+uses Winapi.Windows, System.Classes, System.UITypes, Graphics, Vcl.Forms, Vcl.Controls,
+  Vcl.StdCtrls, Vcl.Buttons, Vcl.ExtCtrls, Vcl.ComCtrls, Vcl.Dialogs;
+
+type
+  TFormElement = class(TForm)
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+implementation
+
+{$R *.dfm}
+
+procedure TFormElement.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+  Action := caFree;
+end;
+
+procedure TFormElement.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
+begin
+  CanClose := MessageDlg('Вы хотите закрыть форму?', mtConfirmation, [mbYes, mbNo], 0) = mrYes;
+end;
+
+end.

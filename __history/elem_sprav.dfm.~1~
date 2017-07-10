@@ -1,0 +1,5 @@
+inherited FormElement1: TFormElement1
+  Caption = 'FormElement1'
+  PixelsPerInch = 96
+  TextHeight = 13
+end
