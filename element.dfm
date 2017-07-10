@@ -30,6 +30,14 @@ object FormElement: TFormElement
     Align = alClient
     BevelInner = bvLowered
     TabOrder = 1
+    object Edit1: TEdit
+      Left = 80
+      Top = 56
+      Width = 121
+      Height = 21
+      TabOrder = 0
+      Text = 'Edit1'
+    end
   end
   object PanelBottom: TPanel
     Left = 0
