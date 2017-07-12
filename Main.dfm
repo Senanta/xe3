@@ -159,7 +159,7 @@ object MainForm: TMainForm
     object N2: TMenuItem
       Caption = #1057#1087#1088#1072#1074#1086#1095#1085#1080#1082#1080
       object N8: TMenuItem
-        Action = OpenElementList1
+        Action = v_Objects
       end
     end
     object N3: TMenuItem
@@ -313,17 +313,17 @@ object MainForm: TMainForm
         't'
       OnExecute = HelpAbout1Execute
     end
-    object OpenElementList1: TAction
-      Category = 'ElementList'
+    object v_Objects: TAction
+      Category = 'ElementListSprav'
       Caption = #1053#1086#1084#1077#1085#1082#1083#1072#1090#1091#1088#1072
-      OnExecute = OpenElementList1Execute
+      OnExecute = ActionExecute
     end
   end
   object ImageList1: TImageList
     Left = 104
     Top = 200
     Bitmap = {
-      494C01011D003C00580010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C01011D005C005C0010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000008000000001002000000000000080
       000000000000000000000000000000000000000000000000BF00FFFFFF000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -1387,6 +1387,8 @@ object MainForm: TMainForm
       000000000000}
   end
   object IBCConnection1: TIBCConnection
+    Options.Charset = 'NONE'
+    Options.UseUnicode = True
     Options.LocalFailover = True
     ClientLibrary = 'C:\Program Files (x86)\Firebird\Firebird_2_5\bin\fbclient.dll'
     Port = '3050'
@@ -1398,6 +1400,7 @@ object MainForm: TMainForm
   end
   object IBCTransactionExec: TIBCTransaction
     DefaultConnection = IBCConnection1
+    DefaultCloseAction = taCommit
     Left = 488
     Top = 208
   end

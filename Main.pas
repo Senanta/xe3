@@ -70,7 +70,7 @@ type
     N5: TMenuItem;
     N6: TMenuItem;
     N7: TMenuItem;
-    OpenElementList1: TAction;
+    v_Objects: TAction;
     N8: TMenuItem;
     IBCConnection1: TIBCConnection;
     IBCTransactionExec: TIBCTransaction;
@@ -81,7 +81,7 @@ type
     procedure FileExit1Execute(Sender: TObject);
     procedure FileCloseAllExecute(Sender: TObject);
     procedure FileCloseAllUpdate(Sender: TObject);
-    procedure OpenElementList1Execute(Sender: TObject);
+    procedure ActionExecute(Sender: TObject);
     procedure Timer1Timer(Sender: TObject);
   private
     { Private declarations }
@@ -115,9 +115,10 @@ begin
   AboutBox.ShowModal;
 end;
 
-procedure TMainForm.OpenElementList1Execute(Sender: TObject);
+procedure TMainForm.ActionExecute(Sender: TObject);
 begin
  fmElementListSprav := TFormElementListSprav.Create(Application);
+ fmElementListSprav.NameTableView := (Sender as TAction).Name; //Имя view из имени Action
 end;
 
 procedure TMainForm.Timer1Timer(Sender: TObject);
@@ -155,7 +156,7 @@ try
         end;
  end;
 finally
-  CloseFile(f); // закрыть файл
+  CloseFile(f);
 end;
 end;
 

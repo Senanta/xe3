@@ -74,6 +74,12 @@ object FormElement: TFormElement
     object ActionSave: TAction
       Caption = #1047#1072#1087#1080#1089#1072#1090#1100
       ImageIndex = 8
+      OnUpdate = ActionSaveUpdate
     end
+  end
+  object IBCQuery1: TIBCQuery
+    Connection = MainForm.IBCConnection1
+    Left = 192
+    Top = 96
   end
 end
