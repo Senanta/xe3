@@ -4,7 +4,7 @@ interface
 
 uses Winapi.Windows, System.Classes, System.UITypes, Graphics, Vcl.Forms, Vcl.Controls,
   Vcl.StdCtrls, Vcl.Buttons, Vcl.ExtCtrls, Vcl.ComCtrls, Vcl.Dialogs,
-  System.Actions, Vcl.ActnList, main;
+  System.Actions, Vcl.ActnList, main, Data.DB, MemDS, DBAccess, IBC;
 
 type
   TFormElement = class(TForm)
@@ -16,18 +16,30 @@ type
     btSave: TButton;
     ActionList1: TActionList;
     ActionSave: TAction;
+    IBCQuery1: TIBCQuery;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
+    procedure ActionSaveUpdate(Sender: TObject);
   private
     { Private declarations }
+    FID         :Int64;
+    FIsChange   :Boolean;
+    FNameTableView :String; // Имя вьюва или таблицы для выбора записи с ID = FID
   public
     { Public declarations }
+    property ID         :Int64 read FID write FID default 0;
+    property IsChange   :Boolean read FIsChange write FIsChange default false;
     procedure Save();
   end;
 
 implementation
 
 {$R *.dfm}
+
+procedure TFormElement.ActionSaveUpdate(Sender: TObject);
+begin
+  (Sender as TAction).Enabled := FIsChange;
+end;
 
 procedure TFormElement.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
@@ -41,7 +53,7 @@ end;
 
 procedure TFormElement.Save;
 begin
-//
+
 end;
 
 end.

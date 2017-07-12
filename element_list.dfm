@@ -13,7 +13,7 @@ object FormElementList: TFormElementList
   OnClose = FormClose
   PixelsPerInch = 96
   TextHeight = 13
-  object Panel1: TPanel
+  object panelTop: TPanel
     Left = 0
     Top = 0
     Width = 625
@@ -100,10 +100,47 @@ object FormElementList: TFormElementList
       end
     end
   end
+  object panelMiddle: TPanel
+    Left = 0
+    Top = 30
+    Width = 625
+    Height = 228
+    Align = alClient
+    BevelInner = bvLowered
+    Caption = #1055#1086#1083#1091#1095#1077#1085#1080#1077' '#1076#1072#1085#1085#1099#1093'...'
+    TabOrder = 1
+    ExplicitLeft = 80
+    ExplicitTop = 80
+    ExplicitWidth = 185
+    ExplicitHeight = 41
+    object DBGridEh1: TDBGridEh
+      Left = 2
+      Top = 2
+      Width = 621
+      Height = 224
+      Align = alClient
+      DataSource = DataSource1
+      DynProps = <>
+      TabOrder = 0
+      Visible = False
+      object RowDetailData: TRowDetailPanelControlEh
+      end
+    end
+  end
+  object panelBottom: TPanel
+    Left = 0
+    Top = 258
+    Width = 625
+    Height = 30
+    Align = alBottom
+    BevelInner = bvLowered
+    TabOrder = 2
+    ExplicitTop = 264
+  end
   object MainMenu1: TMainMenu
     Images = MainForm.ImageList1
-    Left = 264
-    Top = 120
+    Left = 544
+    Top = 32
     object N1: TMenuItem
       Caption = #1044#1077#1081#1089#1090#1074#1080#1103
       object N2: TMenuItem
@@ -122,8 +159,8 @@ object FormElementList: TFormElementList
   end
   object ActionList1: TActionList
     Images = MainForm.ImageList1
-    Left = 296
-    Top = 120
+    Left = 576
+    Top = 32
     object ActionAdd: TAction
       Caption = #1044#1086#1073#1072#1074#1080#1090#1100
       ImageIndex = 26
@@ -140,5 +177,20 @@ object FormElementList: TFormElementList
       Caption = #1059#1076#1072#1083#1080#1090#1100
       ImageIndex = 28
     end
+  end
+  object IBCQuery1: TIBCQuery
+    Connection = MainForm.IBCConnection1
+    Left = 32
+    Top = 168
+  end
+  object DataSource1: TDataSource
+    DataSet = IBCQuery1
+    Left = 64
+    Top = 168
+  end
+  object Timer1: TTimer
+    OnTimer = Timer1Timer
+    Left = 512
+    Top = 32
   end
 end

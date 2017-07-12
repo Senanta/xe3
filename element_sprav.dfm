@@ -7,7 +7,7 @@ inherited FormElementSprav: TFormElementSprav
       Left = 8
       Top = 6
       Width = 300
-      Height = 44
+      Height = 107
       AllowedSelections = []
       RowCategories.CategoryProps = <>
       PrintService.ColorSchema = pcsFullColorEh
