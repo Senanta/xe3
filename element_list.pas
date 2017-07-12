@@ -36,8 +36,6 @@ uses
     ToolButton5: TToolButton;
     ToolButton6: TToolButton;
     ToolButton7: TToolButton;
-    IBCQuery1: TIBCQuery;
-    DataSource1: TDataSource;
     Timer1: TTimer;
     panelMiddle: TPanel;
     panelBottom: TPanel;
@@ -59,15 +57,15 @@ implementation
 
 procedure TFormElementList.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
- IBCQuery1.Close;
+// IBCQuery1.Close;
  Action := caFree;
 end;
 
 procedure TFormElementList.Open;
 begin
-  IBCQuery1.Close;
-  IBCQuery1.SQL.Add('Select * From ' + NameTableView);
-  IBCQuery1.Open;
+//  IBCQuery1.Close;
+//  IBCQuery1.SQL.Add('Select * From ' + NameTableView);
+//  IBCQuery1.Open;
   DBGridEh1.Visible := true;
 end;
 

@@ -323,7 +323,7 @@ object MainForm: TMainForm
     Left = 104
     Top = 200
     Bitmap = {
-      494C01011D005C005C0010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C01011D006000600010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000008000000001002000000000000080
       000000000000000000000000000000000000000000000000BF00FFFFFF000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -1386,27 +1386,15 @@ object MainForm: TMainForm
       FDDF81FFF87FFFFFFFFFFFFFFFFFFFFF00000000000000000000000000000000
       000000000000}
   end
-  object IBCConnection1: TIBCConnection
-    Options.Charset = 'NONE'
-    Options.UseUnicode = True
-    Options.LocalFailover = True
-    ClientLibrary = 'C:\Program Files (x86)\Firebird\Firebird_2_5\bin\fbclient.dll'
-    Port = '3050'
-    Username = 'SYSDBA'
-    LoginPrompt = False
-    Left = 488
-    Top = 176
-    EncryptedPassword = '92FF9EFF8CFF8BFF9AFF8DFF94FF9AFF86FF'
-  end
-  object IBCTransactionExec: TIBCTransaction
-    DefaultConnection = IBCConnection1
-    DefaultCloseAction = taCommit
-    Left = 488
-    Top = 208
-  end
   object Timer1: TTimer
     OnTimer = Timer1Timer
     Left = 160
     Top = 136
+  end
+  object ADOConnection1: TADOConnection
+    CommandTimeout = 3600
+    IsolationLevel = ilReadCommitted
+    Left = 408
+    Top = 128
   end
 end

@@ -109,17 +109,11 @@ object FormElementList: TFormElementList
     BevelInner = bvLowered
     Caption = #1055#1086#1083#1091#1095#1077#1085#1080#1077' '#1076#1072#1085#1085#1099#1093'...'
     TabOrder = 1
-    ExplicitLeft = 80
-    ExplicitTop = 80
-    ExplicitWidth = 185
-    ExplicitHeight = 41
     object DBGridEh1: TDBGridEh
       Left = 2
       Top = 2
-      Width = 621
-      Height = 224
-      Align = alClient
-      DataSource = DataSource1
+      Width = 367
+      Height = 191
       DynProps = <>
       TabOrder = 0
       Visible = False
@@ -135,7 +129,6 @@ object FormElementList: TFormElementList
     Align = alBottom
     BevelInner = bvLowered
     TabOrder = 2
-    ExplicitTop = 264
   end
   object MainMenu1: TMainMenu
     Images = MainForm.ImageList1
@@ -177,16 +170,6 @@ object FormElementList: TFormElementList
       Caption = #1059#1076#1072#1083#1080#1090#1100
       ImageIndex = 28
     end
-  end
-  object IBCQuery1: TIBCQuery
-    Connection = MainForm.IBCConnection1
-    Left = 32
-    Top = 168
-  end
-  object DataSource1: TDataSource
-    DataSet = IBCQuery1
-    Left = 64
-    Top = 168
   end
   object Timer1: TTimer
     OnTimer = Timer1Timer

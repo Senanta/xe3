@@ -6,7 +6,7 @@ uses Winapi.Windows, System.SysUtils, System.Classes, System.Contnrs, System.UIT
   Vcl.Graphics, Vcl.Forms,
   Vcl.Controls, Vcl.Menus, Vcl.StdCtrls, Vcl.Dialogs, Vcl.Buttons, Winapi.Messages,
   Vcl.ExtCtrls, Vcl.ComCtrls, Vcl.StdActns, Vcl.ActnList, Vcl.ToolWin,
-  Vcl.ImgList, System.Actions, DBAccess, IBC, Data.DB, IBCError;
+  Vcl.ImgList, System.Actions, DBAccess, IBC, Data.DB, IBCError, Data.Win.ADODB;
 
 
 type
@@ -72,9 +72,8 @@ type
     N7: TMenuItem;
     v_Objects: TAction;
     N8: TMenuItem;
-    IBCConnection1: TIBCConnection;
-    IBCTransactionExec: TIBCTransaction;
     Timer1: TTimer;
+    ADOConnection1: TADOConnection;
     procedure FileNew1Execute(Sender: TObject);
     procedure FileOpen1Execute(Sender: TObject);
     procedure HelpAbout1Execute(Sender: TObject);
@@ -128,14 +127,14 @@ var
   buf: string;
 begin
   TTimer(Sender).Enabled :=false;
-  fName := 'snt_conn.txt';
+  fName := 'snt_conn.udl';
   AssignFile(f, fName);
 try
  try
   Reset(f);
   readln(f, buf);
-  IBCConnection1.Database :=buf;
-  IBCConnection1.Connected :=true;
+  AdoConnection1.ConnectionString :='FILE NAME='+fName;
+  AdoConnection1.Connected :=true;
   StatusBar.Panels[1].Text :='Подключение..Ок!';
  except
       on E :EInOutError do
@@ -143,11 +142,11 @@ try
          ShowMessage(E.ClassName+' : не найден файл с параметрами подключения '+E.Message + ' ' + fName);
          Application.Terminate;
         end;
-      on E :EIBCError do
-        begin
-         ShowMessage(E.ClassName+' : файл или алиас в строке подключения указан неверно '+E.Message);
-         Application.Terminate;
-        end;
+//      on E :EIBCError do
+//        begin
+//         ShowMessage(E.ClassName+' : файл или алиас в строке подключения указан неверно '+E.Message);
+//         Application.Terminate;
+//        end;
       on E : Exception do
         begin
          ShowMessage(E.ClassName+' поднята ошибка, с сообщением : '+E.Message);
