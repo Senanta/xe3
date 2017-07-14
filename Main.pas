@@ -6,7 +6,7 @@ uses Winapi.Windows, System.SysUtils, System.Classes, System.Contnrs, System.UIT
   Vcl.Graphics, Vcl.Forms,
   Vcl.Controls, Vcl.Menus, Vcl.StdCtrls, Vcl.Dialogs, Vcl.Buttons, Winapi.Messages,
   Vcl.ExtCtrls, Vcl.ComCtrls, Vcl.StdActns, Vcl.ActnList, Vcl.ToolWin,
-  Vcl.ImgList, System.Actions, DBAccess, IBC, Data.DB, IBCError, Data.Win.ADODB;
+  Vcl.ImgList, System.Actions, Data.Win.ADODB, Data.DB, ComObj;
 
 
 type
@@ -142,11 +142,11 @@ try
          ShowMessage(E.ClassName+' : не найден файл с параметрами подключения '+E.Message + ' ' + fName);
          Application.Terminate;
         end;
-//      on E :EIBCError do
-//        begin
-//         ShowMessage(E.ClassName+' : файл или алиас в строке подключения указан неверно '+E.Message);
-//         Application.Terminate;
-//        end;
+      on E :EOleException do
+        begin
+         ShowMessage(E.ClassName+' : файл или алиас в строке подключения указан неверно '+E.Message);
+         Application.Terminate;
+        end;
       on E : Exception do
         begin
          ShowMessage(E.ClassName+' поднята ошибка, с сообщением : '+E.Message);
