@@ -1,2 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<BorlandProject/>
+<BorlandProject>
+	<Transactions>
+    <Transaction>1899.12.30 00:00:00.000.612,C:\Senanta\XE3\element_sprav.pas=C:\Senanta\XE3\element_sprav_obj.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.612,C:\Senanta\XE3\element_sprav.dfm=C:\Senanta\XE3\element_sprav_obj.dfm</Transaction>
+  </Transactions>
+</BorlandProject>

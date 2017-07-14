@@ -6,8 +6,8 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, element_list, System.Actions,
   Vcl.ActnList, Vcl.Menus, Vcl.ComCtrls, Vcl.ToolWin, Vcl.ExtCtrls,
-  DBGridEhGrouping, ToolCtrlsEh, DBGridEhToolCtrls, DynVarsEh, Data.DB, MemDS,
-  DBAccess, IBC, EhLibVCL, GridsEh, DBAxisGridsEh, DBGridEh;
+  DBGridEhGrouping, ToolCtrlsEh, DBGridEhToolCtrls, DynVarsEh, EhLibVCL,
+  GridsEh, DBAxisGridsEh, DBGridEh;
 
 type
   TFormElementListSprav = class(TFormElementList)
@@ -21,16 +21,17 @@ type
 
 implementation
 {$R *.dfm}
-uses element_sprav;
+uses element_sprav_obj;
 
 var
-  fmElementSprav :TFormElementSprav;
+  fmElementSpravObj :TFormElementSpravObj;
 
 procedure TFormElementListSprav.ActionAddExecute(Sender: TObject);
 begin
   inherited;
-  fmElementSprav := TFormElementSprav.Create(Application);
-  fmElementSprav.ID := -1;
+  fmElementSpravObj := TFormElementSpravObj.Create(Application);
+  fmElementSpravObj.ID := -1; //новый
+  fmElementSpravObj.NameTableView := NameTableView; // Присвоили имя view из формы списка
 end;
 
 end.

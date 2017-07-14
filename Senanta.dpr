@@ -6,7 +6,7 @@ uses
   element in 'element.pas' {FormElement},
   about in 'about.pas' {AboutBox},
   element_list in 'element_list.pas' {FormElementList},
-  element_sprav in 'element_sprav.pas' {FormElementSprav},
+  element_sprav_obj in 'element_sprav_obj.pas' {FormElementSpravObj},
   element_doc in 'element_doc.pas' {FormElementDoc},
   element_list_doc in 'element_list_doc.pas' {FormElementListDoc},
   element_list_sprav in 'element_list_sprav.pas' {FormElementListSprav};

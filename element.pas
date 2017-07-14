@@ -4,7 +4,7 @@ interface
 
 uses Winapi.Windows, System.Classes, System.UITypes, Graphics, Vcl.Forms, Vcl.Controls,
   Vcl.StdCtrls, Vcl.Buttons, Vcl.ExtCtrls, Vcl.ComCtrls, Vcl.Dialogs,
-  System.Actions, Vcl.ActnList, main, Data.DB, MemDS, DBAccess, IBC;
+  System.Actions, Vcl.ActnList, main;
 
 type
   TFormElement = class(TForm)
@@ -16,7 +16,6 @@ type
     btSave: TButton;
     ActionList1: TActionList;
     ActionSave: TAction;
-    IBCQuery1: TIBCQuery;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure ActionSaveUpdate(Sender: TObject);
@@ -28,6 +27,7 @@ type
   public
     { Public declarations }
     property ID         :Int64 read FID write FID default 0;
+    property NameTableView         :string read FNameTableView write FNameTableView;
     property IsChange   :Boolean read FIsChange write FIsChange default false;
     procedure Save();
   end;

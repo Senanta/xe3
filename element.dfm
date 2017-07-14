@@ -77,9 +77,4 @@ object FormElement: TFormElement
       OnUpdate = ActionSaveUpdate
     end
   end
-  object IBCQuery1: TIBCQuery
-    Connection = MainForm.IBCConnection1
-    Left = 192
-    Top = 96
-  end
 end
