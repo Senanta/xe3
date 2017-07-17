@@ -112,8 +112,9 @@ object FormElementList: TFormElementList
     object DBGridEh1: TDBGridEh
       Left = 2
       Top = 2
-      Width = 367
-      Height = 191
+      Width = 511
+      Height = 199
+      DataSource = DataSource1
       DynProps = <>
       TabOrder = 0
       Visible = False
@@ -139,11 +140,11 @@ object FormElementList: TFormElementList
       object N2: TMenuItem
         Action = ActionAdd
       end
-      object N3: TMenuItem
-        Action = ActionEdit
-      end
       object N4: TMenuItem
         Action = ActionAddCopy
+      end
+      object N3: TMenuItem
+        Action = ActionEdit
       end
       object N5: TMenuItem
         Action = ActionDelete
@@ -161,19 +162,47 @@ object FormElementList: TFormElementList
     object ActionAddCopy: TAction
       Caption = #1044#1086#1073#1072#1074#1080#1090#1100' '#1082#1086#1087#1080#1088#1086#1074#1072#1085#1080#1077#1084
       ImageIndex = 27
+      OnUpdate = ActionEditUpdate
     end
     object ActionEdit: TAction
       Caption = #1048#1079#1084#1077#1085#1080#1090#1100
       ImageIndex = 24
+      OnUpdate = ActionEditUpdate
     end
     object ActionDelete: TAction
       Caption = #1059#1076#1072#1083#1080#1090#1100
       ImageIndex = 28
+      OnUpdate = ActionEditUpdate
     end
   end
   object Timer1: TTimer
     OnTimer = Timer1Timer
     Left = 512
     Top = 32
+  end
+  object quList: TADOQuery
+    CacheSize = 256
+    Connection = MainForm.ADOConnection1
+    CursorLocation = clUseServer
+    LockType = ltReadOnly
+    CommandTimeout = 3600
+    Parameters = <>
+    Prepared = True
+    SQL.Strings = (
+      'DECLARE    @intLoop int'
+      '    SET @intLoop = 35'
+      '    WHILE @intLoop > 1'
+      '    BEGIN'
+      '     SELECT  @intLoop, GetDate()'
+      '     WAITFOR DELAY '#39'00:00:01'#39
+      '     SELECT  @intLoop = @intLoop -1'
+      '    END')
+    Left = 448
+    Top = 126
+  end
+  object DataSource1: TDataSource
+    DataSet = quList
+    Left = 480
+    Top = 126
   end
 end

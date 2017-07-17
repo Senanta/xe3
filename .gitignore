@@ -1,0 +1,6 @@
+*.vlb
+*.dcu
+*.udl
+*.exe
+*.identcache 
+/__history/*

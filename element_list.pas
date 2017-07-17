@@ -6,7 +6,8 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.Menus, System.Actions, Vcl.ActnList,
   Vcl.ComCtrls, Vcl.ToolWin, Vcl.ExtCtrls, Vcl.Buttons, main, DBGridEhGrouping,
-  ToolCtrlsEh, DBGridEhToolCtrls, DynVarsEh, EhLibVCL, GridsEh, DBAxisGridsEh, DBGridEh;
+  ToolCtrlsEh, DBGridEhToolCtrls, DynVarsEh, EhLibVCL, GridsEh, DBAxisGridsEh, DBGridEh,
+  Vcl.StdCtrls, Data.DB, Data.Win.ADODB;
 
  ///<summary>
  ///  Форма для отображения списка элементов
@@ -39,15 +40,18 @@ uses
     panelMiddle: TPanel;
     panelBottom: TPanel;
     DBGridEh1: TDBGridEh;
+    quList: TADOQuery;
+    DataSource1: TDataSource;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure Timer1Timer(Sender: TObject);
+    procedure ActionEditUpdate(Sender: TObject);
   private
     { Private declarations }
     FNameTableView :String; // Имя вьюва или таблицы для выбора
   public
     { Public declarations }
     property NameTableView         :string read FNameTableView write FNameTableView;
-    procedure Open();
+    procedure DataInit();
   end;
 
 implementation
@@ -56,22 +60,28 @@ implementation
 
 procedure TFormElementList.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
-// IBCQuery1.Close;
+ quList.Close;
  Action := caFree;
 end;
 
-procedure TFormElementList.Open;
+procedure TFormElementList.ActionEditUpdate(Sender: TObject);
 begin
-//  IBCQuery1.Close;
-//  IBCQuery1.SQL.Add('Select * From ' + NameTableView);
-//  IBCQuery1.Open;
+  (Sender as TAction).Enabled := (not qulist.IsEmpty);
+end;
+
+procedure TFormElementList.DataInit;
+begin
+  quList.Close;
+  quList.SQL.Clear;
+  quList.SQL.Add('Select * From ' + NameTableView);
+  quList.Open; quList.Last;
   DBGridEh1.Visible := true;
 end;
 
 procedure TFormElementList.Timer1Timer(Sender: TObject);
 begin
   Timer1.Enabled :=false;
-  Open();
+  DataInit();
 end;
 
 end.

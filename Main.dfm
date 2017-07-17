@@ -161,6 +161,9 @@ object MainForm: TMainForm
       object N8: TMenuItem
         Action = v_Objects
       end
+      object N9: TMenuItem
+        Action = v_Subjects
+      end
     end
     object N3: TMenuItem
       Caption = #1044#1086#1082#1091#1084#1077#1085#1090#1099
@@ -318,12 +321,17 @@ object MainForm: TMainForm
       Caption = #1053#1086#1084#1077#1085#1082#1083#1072#1090#1091#1088#1072
       OnExecute = ActionExecute
     end
+    object v_Subjects: TAction
+      Category = 'ElementListSprav'
+      Caption = #1050#1086#1085#1090#1088#1072#1075#1077#1085#1090#1099
+      OnExecute = ActionExecute
+    end
   end
   object ImageList1: TImageList
     Left = 104
     Top = 200
     Bitmap = {
-      494C01011D006000640010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C01011D006000740010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000008000000001002000000000000080
       000000000000000000000000000000000000000000000000BF00FFFFFF000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -1393,8 +1401,11 @@ object MainForm: TMainForm
   end
   object ADOConnection1: TADOConnection
     CommandTimeout = 3600
+    CursorLocation = clUseServer
     IsolationLevel = ilReadCommitted
+    KeepConnection = False
     LoginPrompt = False
+    Provider = 'SQLOLEDB'
     Left = 408
     Top = 128
   end

@@ -74,6 +74,8 @@ type
     N8: TMenuItem;
     Timer1: TTimer;
     ADOConnection1: TADOConnection;
+    v_Subjects: TAction;
+    N9: TMenuItem;
     procedure FileNew1Execute(Sender: TObject);
     procedure FileOpen1Execute(Sender: TObject);
     procedure HelpAbout1Execute(Sender: TObject);
@@ -94,6 +96,16 @@ var
 
 implementation
 {$R *.dfm}
+// Для теста CommandTimeout
+//DECLARE    @intLoop int
+//    SET @intLoop = 10
+//    WHILE @intLoop > 1
+//    BEGIN
+//     SELECT  @intLoop, GetDate()
+//     WAITFOR DELAY '00:00:01'
+//     SELECT  @intLoop = @intLoop -1
+//    END
+//TADODataSet(qryReport).CommandTimeout := ADOConnection.CommandTimeout;
 
 uses element_list_sprav, About;
 var
