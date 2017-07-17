@@ -4,3 +4,7 @@
 *.exe
 *.identcache 
 /__history/*
+/__history
+/snt_conn.udl
+/Senanta.identcache
+/Senanta.dproj.local

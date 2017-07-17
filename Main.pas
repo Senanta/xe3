@@ -6,7 +6,7 @@ uses Winapi.Windows, System.SysUtils, System.Classes, System.Contnrs, System.UIT
   Vcl.Graphics, Vcl.Forms,
   Vcl.Controls, Vcl.Menus, Vcl.StdCtrls, Vcl.Dialogs, Vcl.Buttons, Winapi.Messages,
   Vcl.ExtCtrls, Vcl.ComCtrls, Vcl.StdActns, Vcl.ActnList, Vcl.ToolWin,
-  Vcl.ImgList, System.Actions, Data.Win.ADODB, Data.DB, ComObj;
+  Vcl.ImgList, System.Actions, Data.Win.ADODB, Data.DB, ComObj, System.ImageList;
 
 
 type
@@ -113,7 +113,7 @@ var
 
 procedure TMainForm.FileNew1Execute(Sender: TObject);
 begin
- //fmElement := TFormElement.Create(Application);
+ // fmElement := TFormElement.Create(Application);
 end;
 
 procedure TMainForm.FileOpen1Execute(Sender: TObject);
