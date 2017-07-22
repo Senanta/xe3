@@ -112,7 +112,7 @@ object FormElement: TFormElement
   end
   object quElement: TADOQuery
     CacheSize = 256
-    Connection = MainForm.ADOConnection1
+    Connection = DataModuleSql.ADOConnection1
     CursorLocation = clUseServer
     LockType = ltReadOnly
     CommandTimeout = 3600

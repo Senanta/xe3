@@ -124,17 +124,23 @@ object MainForm: TMainForm
       object FileOpenItem: TMenuItem
         Action = FileOpen1
       end
-      object FileCloseItem: TMenuItem
-        Action = FileClose1
-      end
-      object N5: TMenuItem
-        Action = FileCloseAll
+      object N10: TMenuItem
+        Caption = '-'
       end
       object FileSaveItem: TMenuItem
         Action = FileSave1
       end
       object FileSaveAsItem: TMenuItem
         Action = FileSaveAs1
+      end
+      object N11: TMenuItem
+        Action = FileSaveAll
+      end
+      object FileCloseItem: TMenuItem
+        Action = FileClose1
+      end
+      object N5: TMenuItem
+        Action = FileCloseAll
       end
       object N1: TMenuItem
         Caption = '-'
@@ -326,12 +332,16 @@ object MainForm: TMainForm
       Caption = #1050#1086#1085#1090#1088#1072#1075#1077#1085#1090#1099
       OnExecute = ActionExecute
     end
+    object FileSaveAll: TAction
+      Category = 'File'
+      Caption = 'FileSaveAll'
+    end
   end
   object ImageList1: TImageList
     Left = 104
     Top = 200
     Bitmap = {
-      494C01011D007C007C0010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C01011D008400840010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000008000000001002000000000000080
       000000000000000000000000000000000000000000000000BF00FFFFFF000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -1398,16 +1408,5 @@ object MainForm: TMainForm
     OnTimer = Timer1Timer
     Left = 160
     Top = 136
-  end
-  object ADOConnection1: TADOConnection
-    CommandTimeout = 3600
-    ConnectionString = 'ttt'
-    CursorLocation = clUseServer
-    IsolationLevel = ilReadCommitted
-    KeepConnection = False
-    LoginPrompt = False
-    Provider = 'SQLOLEDB'
-    Left = 408
-    Top = 128
   end
 end

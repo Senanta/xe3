@@ -4,8 +4,9 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, element, System.Actions, Vcl.ActnList,
-  Vcl.StdCtrls, Vcl.ExtCtrls;
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, System.Actions, Vcl.ActnList,
+  Vcl.StdCtrls, Vcl.ExtCtrls, element, MemTableDataEh, Data.DB, MemTableEh,
+  Data.Win.ADODB, EhLibVCL, GridsEh, DBAxisGridsEh, DBVertGridsEh, Vcl.ComCtrls;
 
 ///<summary>
 /// Дочерняя форма элемента документов - наследуем от TFormElement

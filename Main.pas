@@ -3,10 +3,9 @@ unit MAIN;
 interface
 
 uses Winapi.Windows, System.SysUtils, System.Classes, System.Contnrs, System.UITypes,
-  Vcl.Graphics, Vcl.Forms,
-  Vcl.Controls, Vcl.Menus, Vcl.StdCtrls, Vcl.Dialogs, Vcl.Buttons, Winapi.Messages,
-  Vcl.ExtCtrls, Vcl.ComCtrls, Vcl.StdActns, Vcl.ActnList, Vcl.ToolWin,
-  Vcl.ImgList, System.Actions, Data.Win.ADODB, Data.DB, ComObj, System.ImageList;
+  Vcl.Graphics, Vcl.Forms,  Vcl.Controls, Vcl.Menus, Vcl.StdCtrls, Vcl.Dialogs, Vcl.Buttons,
+  Winapi.Messages, Vcl.ExtCtrls, Vcl.ComCtrls, Vcl.StdActns, Vcl.ActnList, Vcl.ToolWin,
+  Vcl.ImgList, System.Actions, ComObj, System.ImageList, Data.DB;
 
 
 type
@@ -73,9 +72,11 @@ type
     v_Objects: TAction;
     N8: TMenuItem;
     Timer1: TTimer;
-    ADOConnection1: TADOConnection;
     v_Subjects: TAction;
     N9: TMenuItem;
+    N10: TMenuItem;
+    N11: TMenuItem;
+    FileSaveAll: TAction;
     procedure FileNew1Execute(Sender: TObject);
     procedure FileOpen1Execute(Sender: TObject);
     procedure HelpAbout1Execute(Sender: TObject);
@@ -107,7 +108,7 @@ implementation
 //    END
 //TADODataSet(qryReport).CommandTimeout := ADOConnection.CommandTimeout;
 
-uses element_list_sprav, About;
+uses data_module_sql, element_list_sprav, About;
 var
   fmElementListSprav :TFormElementListSprav;
 
@@ -145,8 +146,8 @@ try
  try
   Reset(f);
   readln(f, buf);
-  AdoConnection1.ConnectionString :='FILE NAME='+fName;
-  AdoConnection1.Connected :=true;
+  DataModuleSql.AdoConnection1.ConnectionString :='FILE NAME='+fName;
+  DataModuleSql.AdoConnection1.Connected :=true;
   StatusBar.Panels[1].Text :='Подключение..Ок!';
  except
       on E :EInOutError do
@@ -157,6 +158,11 @@ try
       on E :EOleException do
         begin
          ShowMessage(E.ClassName+' : файл или алиас в строке подключения указан неверно '+E.Message);
+         Application.Terminate;
+        end;
+      on E :EDatabaseError do
+        begin
+         ShowMessage(E.ClassName+' : Попытка подключения закончилась неудачно '+E.Message);
          Application.Terminate;
         end;
       on E : Exception do
@@ -172,13 +178,40 @@ end;
 end;
 
 procedure TMainForm.FileCloseAllExecute(Sender: TObject);
+var
+  i :integer;
+  canClose : boolean;
 begin
-while MainForm.MDIChildCount > 0 do
-  begin
-    if assigned(MainForm.MDIChildren[0])then
-      MainForm.MDIChildren[0].Close;
+//while MainForm.MDIChildCount > 0 do
+//  begin
+//    if assigned(MainForm.MDIChildren[0])then
+//      MainForm.MDIChildren[0].Close;
+//      Application.ProcessMessages;
+//  end;
+ i := MDIChildCount - 1;
+ while i >= 0 do
+   begin
+      canClose :=true;
+      if assigned(MDIChildren[i]) then //Пытаемся закрыть
+        begin
+          if Assigned(MDIChildren[i].OnCloseQuery) //Присвоена ли процедура этому событию
+                then MDIChildren[i].OnCloseQuery(MDIChildren[i], canClose);
+          if canClose then  //если можем закрыть - закрываем, нет - разбираемся
+            begin
+                MDIChildren[i].Free;
+            end
+          else
+            begin
+                MDIChildren[i].BringToFront;
+                break;
+            end;
+        end;
+
+
       Application.ProcessMessages;
-  end;
+      i := i - 1;
+   end;
+
 end;
 
 procedure TMainForm.FileCloseAllUpdate(Sender: TObject);
@@ -188,7 +221,7 @@ end;
 
 procedure TMainForm.FileExit1Execute(Sender: TObject);
 begin
-  Close;
+      Close;
 end;
 
 end.

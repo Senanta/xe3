@@ -158,20 +158,24 @@ object FormElementList: TFormElementList
     object ActionAdd: TAction
       Caption = #1044#1086#1073#1072#1074#1080#1090#1100
       ImageIndex = 26
+      OnExecute = ActionAddExecute
     end
     object ActionAddCopy: TAction
       Caption = #1044#1086#1073#1072#1074#1080#1090#1100' '#1082#1086#1087#1080#1088#1086#1074#1072#1085#1080#1077#1084
       ImageIndex = 27
+      OnExecute = ActionAddCopyExecute
       OnUpdate = ActionEditUpdate
     end
     object ActionEdit: TAction
       Caption = #1048#1079#1084#1077#1085#1080#1090#1100
       ImageIndex = 24
+      OnExecute = ActionEditExecute
       OnUpdate = ActionEditUpdate
     end
     object ActionDelete: TAction
       Caption = #1059#1076#1072#1083#1080#1090#1100
       ImageIndex = 28
+      OnExecute = ActionDeleteExecute
       OnUpdate = ActionEditUpdate
     end
   end
@@ -182,7 +186,7 @@ object FormElementList: TFormElementList
   end
   object quList: TADOQuery
     CacheSize = 256
-    Connection = MainForm.ADOConnection1
+    Connection = DataModuleSql.ADOConnection1
     CursorLocation = clUseServer
     LockType = ltReadOnly
     CommandTimeout = 3600

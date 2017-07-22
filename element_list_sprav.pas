@@ -11,7 +11,7 @@ uses
 
 type
   TFormElementListSprav = class(TFormElementList)
-    procedure ActionAddCopyEditExecute(Sender: TObject);
+
 
 
   private
@@ -23,37 +23,8 @@ type
 
 implementation
 {$R *.dfm}
-uses element_sprav_obj;
-
-var
-  fmElementSpravObj :TFormElementSpravObj;
 
 
-
-procedure TFormElementListSprav.ActionAddCopyEditExecute(Sender: TObject);
-begin
-   if      NameTableView = 'v_Objects' then
-    begin
-     fmElementSpravObj := TFormElementSpravObj.Create(Application);
-     fmElementSpravObj.NameTableView := NameTableView; // ѕрисвоили им€ view из формы списка
-     if TAction(Sender).Name = 'ActionAdd' then fmElementSpravObj.ID := -1; //новый
-     if TAction(Sender).Name = 'ActionEdit' then fmElementSpravObj.ID := quList.FieldByName('id').AsLargeInt; //существующий
-     if TAction(Sender).Name = 'ActionAddCopy' then
-      begin
-        fmElementSpravObj.ID := quList.FieldByName('id').AsLargeInt;
-        fmElementSpravObj.IsCopied :=true; // FID  в родителе переключитс€ в -1;
-      end;
-    end
-   else if NameTableView = 'v_Subjects' then
-    begin
-
-    end
-   else
-    begin
-
-    end;
-
-end;
 
 
 

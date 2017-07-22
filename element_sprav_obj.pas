@@ -9,7 +9,7 @@ uses
   Vcl.ComCtrls, Data.DB, Data.Win.ADODB, MemTableDataEh, MemTableEh;
 
 ///<summary>
-/// Дочерняя форма элемента справочников - наследуем от TFormElement
+/// Дочерняя форма элемента справочника Номенклатура - наследуем от TFormElement
 ///</summary>
 type
   TFormElementSpravObj = class(TFormElement)
