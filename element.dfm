@@ -70,8 +70,8 @@ object FormElement: TFormElement
       Top = 2
       Width = 75
       Height = 27
+      Action = ActionClose
       Align = alRight
-      Caption = #1047#1072#1082#1088#1099#1090#1100
       TabOrder = 2
     end
     object btOK: TButton
@@ -79,8 +79,8 @@ object FormElement: TFormElement
       Top = 2
       Width = 75
       Height = 27
+      Action = ActionOk
       Align = alRight
-      Caption = 'OK'
       TabOrder = 0
     end
     object btSave: TButton
@@ -102,6 +102,14 @@ object FormElement: TFormElement
       ImageIndex = 8
       OnExecute = ActionSaveExecute
       OnUpdate = ActionSaveUpdate
+    end
+    object ActionClose: TAction
+      Caption = #1047#1072#1082#1088#1099#1090#1100
+      OnExecute = ActionCloseExecute
+    end
+    object ActionOk: TAction
+      Caption = 'OK'
+      OnExecute = ActionOkExecute
     end
   end
   object Timer1: TTimer

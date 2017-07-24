@@ -24,6 +24,8 @@ type
     DBVertGridEh1: TDBVertGridEh;
     MemTableEh: TMemTableEh;
     DataSource1: TDataSource;
+    ActionClose: TAction;
+    ActionOk: TAction;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure ActionSaveUpdate(Sender: TObject);
@@ -32,6 +34,8 @@ type
     procedure SetNameElement(const Value: String);
     procedure MemTableEhAfterEdit(DataSet: TDataSet);
     procedure ActionSaveExecute(Sender: TObject);
+    procedure ActionCloseExecute(Sender: TObject);
+    procedure ActionOkExecute(Sender: TObject);
   private
     { Private declarations }
     FID         :Int64;
@@ -46,6 +50,8 @@ type
     property NameTableView         :string read FNameTableView write FNameTableView;
     property IsChange   :Boolean read FIsChange write SetIsChange default false;
     property IsCopied   :Boolean read FIsCopied write FIsCopied default false;
+    procedure cmdInsert;
+    procedure cmdUpdate;
     procedure Save();
     procedure DataInit(); virtual;
   end;
@@ -54,9 +60,20 @@ implementation
 uses data_module_sql;
 {$R *.dfm}
 
+procedure TFormElement.ActionCloseExecute(Sender: TObject);
+begin
+  Close;
+end;
+
+procedure TFormElement.ActionOkExecute(Sender: TObject);
+begin
+  Save;
+  Close;
+end;
+
 procedure TFormElement.ActionSaveExecute(Sender: TObject);
 begin
-  Save();
+  Save;
 end;
 
 procedure TFormElement.ActionSaveUpdate(Sender: TObject);
@@ -100,11 +117,51 @@ begin
   CanClose := true;
 end;
 
+procedure TFormElement.cmdInsert;
+begin
+    if      NameTableView = v_Objects then
+    begin
+      DataModuleSql.Ins_Obj.Parameters.ParamByName('Name').Value := MemTableEh.FieldByName('Name').AsString;
+      DataModuleSql.Ins_Obj.ExecSQL;
+      FID := DataModuleSql.GetId;
+    end
+   else if NameTableView = v_Subjects then
+    begin
+      DataModuleSql.Ins_Subj.Parameters.ParamByName('Name').Value := MemTableEh.FieldByName('Name').AsString;
+      DataModuleSql.Ins_Subj.ExecSQL;
+      FID := DataModuleSql.GetId;
+    end
+   else
+    begin
+
+    end;
+end;
+
+procedure TFormElement.cmdUpdate;
+begin
+    if      NameTableView = v_Objects then
+    begin
+      DataModuleSql.Upd_Obj.Parameters.ParamByName('id').Value := FID;
+      DataModuleSql.Upd_Obj.Parameters.ParamByName('Name').Value := MemTableEh.FieldByName('Name').AsString;
+      DataModuleSql.Upd_Obj.ExecSQL;
+    end
+   else if NameTableView = v_Subjects then
+    begin
+      DataModuleSql.Upd_Subj.Parameters.ParamByName('id').Value := FID;
+      DataModuleSql.Upd_Subj.Parameters.ParamByName('Name').Value := MemTableEh.FieldByName('Name').AsString;
+      DataModuleSql.Upd_Subj.ExecSQL;
+    end
+   else
+    begin
+
+    end;
+end;
+
 procedure TFormElement.DataInit;
 begin
  quElement.Close;
  quElement.SQL.Clear;
- quElement.SQL.Add('Select * From ' + NameTableView + ' Where id = :id');
+ quElement.SQL.Add('Select * From dbo.' + NameTableView + ' Where id = :id');
  quElement.Parameters.ParamByName('ID').Value := FID;
  quElement.Open;
  if IsCopied then FID :=-1; //Если был запрос на копирование
@@ -117,8 +174,8 @@ begin
      MemTableEh.Post;
     end;
  quElement.Close;
-// DBVertGridEh1.Rows.Clear;
-// DBVertGridEh1.Rows.Add();
+ DataModuleSql.DefFields_TDBVertGridEh(NameTableView, DBVertGridEh1);
+ PropertyPages.Visible := true;
 end;
 
 procedure TFormElement.MemTableEhAfterEdit(DataSet: TDataSet);
@@ -128,17 +185,41 @@ end;
 
 procedure TFormElement.Save;
 begin
-  if MemTableEh.State = dsEdit then MemTableEh.Post;
-  IsChange :=false;
-  Name := NameTableView + ': ' + MemTableEh.FieldByName('Name').AsString;
+ DataModuleSql.ADOConnection1.BeginTrans;
+ try
+    if FID = -1 then //новый - будем делать Insert
+      begin
+       cmdInsert;
+       MemTableEh.FieldByName('ID').AsLargeInt:=FID;
+      end
+    else
+      begin
+       cmdUpdate;
+      end;
+    DataModuleSql.ADOConnection1.CommitTrans;
+    if MemTableEh.State = dsEdit then
+          MemTableEh.Post;
+    IsChange :=false;
+    Name := NameTableView + ': ' + MemTableEh.FieldByName('Name').AsString;
+ except
+      on E :EDatabaseError do
+        begin
+         DataModuleSql.ADOConnection1.RollbackTrans;
+         ShowMessage(E.ClassName+' : Попытка выполнения завершилась неудачно '+E.Message);
+        end;
+      on E : Exception do
+        begin
+         DataModuleSql.ADOConnection1.RollbackTrans;
+         ShowMessage(E.ClassName+' поднята ошибка, с сообщением : '+E.Message);
+        end;
+ end;
 end;
 
 procedure TFormElement.Timer1Timer(Sender: TObject);
 begin
  Timer1.Enabled := false;
  DataInit;
- PropertyPages.Visible := true;
-end;
+ end;
 
 procedure TFormElement.SetISChange(const Value: Boolean);
 begin

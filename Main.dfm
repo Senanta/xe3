@@ -39,7 +39,7 @@ object MainForm: TMainForm
     Left = 0
     Top = 0
     Width = 590
-    Height = 30
+    Height = 27
     BorderWidth = 1
     Color = clBtnFace
     Images = ImageList1
@@ -48,6 +48,7 @@ object MainForm: TMainForm
     ParentShowHint = False
     ShowHint = True
     TabOrder = 1
+    Transparent = False
     Wrapable = False
     object ToolButton9: TToolButton
       Left = 5
@@ -341,7 +342,7 @@ object MainForm: TMainForm
     Left = 104
     Top = 200
     Bitmap = {
-      494C01011D008400840010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C01011D008400880010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000008000000001002000000000000080
       000000000000000000000000000000000000000000000000BF00FFFFFF000000
       0000000000000000000000000000000000000000000000000000000000000000

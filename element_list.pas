@@ -91,7 +91,7 @@ end;
 
 procedure TFormElementList.ActionDeleteExecute(Sender: TObject);
 begin
- BaseActionElement(Delete);
+// BaseActionElement(Delete);
 end;
 
 procedure TFormElementList.ActionEditExecute(Sender: TObject);
@@ -144,10 +144,10 @@ procedure TFormElementList.DataInit;
 begin
   quList.Close;
   quList.SQL.Clear;
-  quList.SQL.Add('Select * From ' + NameTableView);
+  quList.SQL.Add('Select * From dbo.' + NameTableView);
   quList.Open;
   quList.Last;
-  DataModuleSql.ExpositionFields(NameTableView, quList);
+  DataModuleSql.DefFields_TDBGridEh(NameTableView, DBGridEh1);
   DBGridEh1.Visible := true;
 end;
 
