@@ -119,11 +119,10 @@ object FormElement: TFormElement
     Top = 141
   end
   object quElement: TADOQuery
-    CacheSize = 256
     Connection = DataModuleSql.ADOConnection1
-    CursorLocation = clUseServer
+    CursorType = ctStatic
     LockType = ltReadOnly
-    CommandTimeout = 3600
+    CommandTimeout = 45
     Parameters = <
       item
         Name = 'ID'

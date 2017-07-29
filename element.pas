@@ -3,7 +3,7 @@ unit element;
 interface
 
 uses Winapi.Windows, System.Classes, System.UITypes, System.SysUtils, Graphics, Vcl.Forms, Vcl.Controls,
-  Vcl.StdCtrls, Vcl.Buttons, Vcl.ExtCtrls, Vcl.ComCtrls, Vcl.Dialogs,
+  Vcl.StdCtrls, Vcl.Buttons, Vcl.ExtCtrls, Vcl.ComCtrls, Vcl.Dialogs, ComObj,
   System.Actions, Vcl.ActnList, EhLibVCL, GridsEh, DBAxisGridsEh,
   DBVertGridsEh, Data.DB, Data.Win.ADODB, MemTableDataEh, MemTableEh;
 
@@ -57,7 +57,7 @@ type
   end;
 
 implementation
-uses data_module_sql;
+uses data_module_sql, main;
 {$R *.dfm}
 
 procedure TFormElement.ActionCloseExecute(Sender: TObject);
@@ -67,7 +67,8 @@ end;
 
 procedure TFormElement.ActionOkExecute(Sender: TObject);
 begin
-  Save;
+  if IsChange then
+                Save;
   Close;
 end;
 
@@ -118,23 +119,31 @@ begin
 end;
 
 procedure TFormElement.cmdInsert;
+procedure GetId;
+begin
+  FID := DataModuleSql.GetId;//SELECT @@IDENTITY AS [IDENTITY]
+  MemTableEh.FieldByName('ID').ReadOnly :=false;
+  MemTableEh.FieldByName('ID').AsLargeInt:=FID;
+  MemTableEh.FieldByName('ID').ReadOnly :=true;
+end;
 begin
     if      NameTableView = v_Objects then
     begin
       DataModuleSql.Ins_Obj.Parameters.ParamByName('Name').Value := MemTableEh.FieldByName('Name').AsString;
       DataModuleSql.Ins_Obj.ExecSQL;
-      FID := DataModuleSql.GetId;
+      GetId;
     end
    else if NameTableView = v_Subjects then
     begin
       DataModuleSql.Ins_Subj.Parameters.ParamByName('Name').Value := MemTableEh.FieldByName('Name').AsString;
       DataModuleSql.Ins_Subj.ExecSQL;
-      FID := DataModuleSql.GetId;
+      GetId;
     end
    else
     begin
 
     end;
+
 end;
 
 procedure TFormElement.cmdUpdate;
@@ -190,11 +199,12 @@ begin
     if FID = -1 then //новый - будем делать Insert
       begin
        cmdInsert;
-       MemTableEh.FieldByName('ID').AsLargeInt:=FID;
+       MainForm.RefreshElementList_AUL(NameTableView, MemTableEh);
       end
     else
       begin
        cmdUpdate;
+       MainForm.RefreshElementList_AUL(NameTableView, MemTableEh);
       end;
     DataModuleSql.ADOConnection1.CommitTrans;
     if MemTableEh.State = dsEdit then
@@ -203,6 +213,11 @@ begin
     Name := NameTableView + ': ' + MemTableEh.FieldByName('Name').AsString;
  except
       on E :EDatabaseError do
+        begin
+         DataModuleSql.ADOConnection1.RollbackTrans;
+         ShowMessage(E.ClassName+' : Попытка выполнения завершилась неудачно '+E.Message);
+        end;
+      on E :EOleException do
         begin
          DataModuleSql.ADOConnection1.RollbackTrans;
          ShowMessage(E.ClassName+' : Попытка выполнения завершилась неудачно '+E.Message);

@@ -4,7 +4,7 @@ interface
 
 uses
   System.SysUtils, System.Classes, Data.DB, Data.Win.ADODB, EhLibVCL, GridsEh, DBAxisGridsEh,
-  DBVertGridsEh, MemTableDataEh, MemTableEh, DBGridEh;
+  DBVertGridsEh, MemTableDataEh, MemTableEh, DBGridEh, ComObj;
 
 const
     v_Objects = 'v_Objects';

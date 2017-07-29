@@ -5,7 +5,6 @@ object DataModuleSql: TDataModuleSql
   object ADOConnection1: TADOConnection
     CommandTimeout = 0
     ConnectionTimeout = 17
-    CursorLocation = clUseServer
     IsolationLevel = ilReadCommitted
     KeepConnection = False
     LoginPrompt = False
@@ -16,17 +15,18 @@ object DataModuleSql: TDataModuleSql
   object quTmp: TADOQuery
     CacheSize = 256
     Connection = ADOConnection1
-    CursorLocation = clUseServer
+    CursorType = ctStatic
     LockType = ltReadOnly
     CommandTimeout = 3600
+    ParamCheck = False
     Parameters = <>
-    Prepared = True
     Left = 96
     Top = 56
   end
   object Ins_Obj: TADOQuery
     Connection = ADOConnection1
-    CursorLocation = clUseServer
+    CursorType = ctStatic
+    ExecuteOptions = [eoExecuteNoRecords]
     LockType = ltReadOnly
     Parameters = <
       item
@@ -35,6 +35,7 @@ object DataModuleSql: TDataModuleSql
         Size = -1
         Value = Null
       end>
+    Prepared = True
     SQL.Strings = (
       'Insert Into dbo.Objects (Name) Values (:Name)')
     Left = 208
@@ -42,7 +43,8 @@ object DataModuleSql: TDataModuleSql
   end
   object Upd_Obj: TADOQuery
     Connection = ADOConnection1
-    CursorLocation = clUseServer
+    CursorType = ctStatic
+    ExecuteOptions = [eoExecuteNoRecords]
     LockType = ltReadOnly
     Parameters = <
       item
@@ -57,6 +59,7 @@ object DataModuleSql: TDataModuleSql
         Size = -1
         Value = Null
       end>
+    Prepared = True
     SQL.Strings = (
       'Update dbo.Objects Set Name=:Name '
       'Where id = :id')
@@ -65,7 +68,8 @@ object DataModuleSql: TDataModuleSql
   end
   object Del_Obj: TADOQuery
     Connection = ADOConnection1
-    CursorLocation = clUseServer
+    CursorType = ctStatic
+    ExecuteOptions = [eoExecuteNoRecords]
     LockType = ltReadOnly
     Parameters = <
       item
@@ -74,6 +78,7 @@ object DataModuleSql: TDataModuleSql
         Size = -1
         Value = Null
       end>
+    Prepared = True
     SQL.Strings = (
       'Update dbo.Objects Set IsDeleted = 1'
       'Where id = :id')
@@ -82,9 +87,11 @@ object DataModuleSql: TDataModuleSql
   end
   object quIdentity: TADOQuery
     Connection = ADOConnection1
-    CursorLocation = clUseServer
+    CursorType = ctStatic
     LockType = ltReadOnly
+    ParamCheck = False
     Parameters = <>
+    Prepared = True
     SQL.Strings = (
       'SELECT @@IDENTITY AS [IDENTITY]')
     Left = 128
@@ -92,7 +99,8 @@ object DataModuleSql: TDataModuleSql
   end
   object Ins_Subj: TADOQuery
     Connection = ADOConnection1
-    CursorLocation = clUseServer
+    CursorType = ctStatic
+    ExecuteOptions = [eoExecuteNoRecords]
     LockType = ltReadOnly
     Parameters = <
       item
@@ -101,6 +109,7 @@ object DataModuleSql: TDataModuleSql
         Size = -1
         Value = Null
       end>
+    Prepared = True
     SQL.Strings = (
       'Insert Into dbo.Subjects (Name) Values (:Name)')
     Left = 208
@@ -108,7 +117,8 @@ object DataModuleSql: TDataModuleSql
   end
   object Upd_Subj: TADOQuery
     Connection = ADOConnection1
-    CursorLocation = clUseServer
+    CursorType = ctStatic
+    ExecuteOptions = [eoExecuteNoRecords]
     LockType = ltReadOnly
     Parameters = <
       item
@@ -123,6 +133,7 @@ object DataModuleSql: TDataModuleSql
         Size = -1
         Value = Null
       end>
+    Prepared = True
     SQL.Strings = (
       'Update dbo.Subjects Set Name=:Name '
       'Where id = :id')
@@ -131,7 +142,8 @@ object DataModuleSql: TDataModuleSql
   end
   object Del_Subj: TADOQuery
     Connection = ADOConnection1
-    CursorLocation = clUseServer
+    CursorType = ctStatic
+    ExecuteOptions = [eoExecuteNoRecords]
     LockType = ltReadOnly
     Parameters = <
       item
@@ -140,6 +152,7 @@ object DataModuleSql: TDataModuleSql
         Size = -1
         Value = Null
       end>
+    Prepared = True
     SQL.Strings = (
       'Update dbo.Subjects Set IsDeleted = 1'
       'Where id = :id')

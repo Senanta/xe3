@@ -89,7 +89,10 @@ type
     { Private declarations }
   public
     { Public declarations }
-
+   ///<Summary>
+    ///RefreshList_AfterUpdateLocal Обновить спиcок данных локально
+    ///  </Summary>
+    procedure RefreshElementList_AUL(const NameTableView :string; const DataSet :TDataSet);
   end;
 
 var
@@ -108,7 +111,7 @@ implementation
 //    END
 //TADODataSet(qryReport).CommandTimeout := ADOConnection.CommandTimeout;
 
-uses data_module_sql, element_list_sprav, About;
+uses data_module_sql, element_list, element_list_sprav, About;
 var
   fmElementListSprav :TFormElementListSprav;
 
@@ -125,6 +128,27 @@ end;
 procedure TMainForm.HelpAbout1Execute(Sender: TObject);
 begin
   AboutBox.ShowModal;
+end;
+
+procedure TMainForm.RefreshElementList_AUL(const NameTableView: string;
+  const DataSet: TDataSet);
+  var
+    i :integer;
+begin
+i := MDIChildCount - 1;
+ while i >= 0 do
+   begin
+    if MDIChildren[i] is TFormElementList then
+        begin
+            if TFormElementList(MDIChildren[i]).NameTableView = NameTableView then
+                begin
+                 //TFormElementList(MDIChildren[i]).quList.ReadOnly := False
+                 TFormElementList(MDIChildren[i]).quList.Edit;
+                end;
+
+        end;
+    i := i - 1;
+   end;
 end;
 
 procedure TMainForm.ActionExecute(Sender: TObject);
@@ -162,7 +186,7 @@ try
         end;
       on E :EDatabaseError do
         begin
-         ShowMessage(E.ClassName+' : Попытка подключения закончилась неудачно '+E.Message);
+         ShowMessage(E.ClassName+' : попытка подключения закончилась неудачно '+E.Message);
          Application.Terminate;
         end;
       on E : Exception do

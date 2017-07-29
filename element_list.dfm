@@ -185,22 +185,13 @@ object FormElementList: TFormElementList
     Top = 32
   end
   object quList: TADOQuery
-    CacheSize = 256
+    CacheSize = 1024
     Connection = DataModuleSql.ADOConnection1
-    CursorLocation = clUseServer
+    CursorType = ctStatic
     LockType = ltReadOnly
     CommandTimeout = 3600
     Parameters = <>
     Prepared = True
-    SQL.Strings = (
-      'DECLARE    @intLoop int'
-      '    SET @intLoop = 35'
-      '    WHILE @intLoop > 1'
-      '    BEGIN'
-      '     SELECT  @intLoop, GetDate()'
-      '     WAITFOR DELAY '#39'00:00:01'#39
-      '     SELECT  @intLoop = @intLoop -1'
-      '    END')
     Left = 448
     Top = 126
   end
