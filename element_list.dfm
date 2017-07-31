@@ -192,12 +192,17 @@ object FormElementList: TFormElementList
     CommandTimeout = 3600
     Parameters = <>
     Prepared = True
-    Left = 448
+    Left = 416
     Top = 126
   end
   object DataSource1: TDataSource
-    DataSet = quList
+    DataSet = MemTableEh
     Left = 480
+    Top = 126
+  end
+  object MemTableEh: TMemTableEh
+    Params = <>
+    Left = 448
     Top = 126
   end
 end

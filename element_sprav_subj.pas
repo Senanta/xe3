@@ -13,6 +13,8 @@ uses
 ///</summary>
   type
   TFormElementSpravSubj = class(TFormElement)
+    TabSheetAgreements: TTabSheet;
+    TabSheetWarehouses: TTabSheet;
   private
     { Private declarations }
   public

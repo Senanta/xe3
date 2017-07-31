@@ -138,6 +138,15 @@ begin
       DataModuleSql.Ins_Subj.Parameters.ParamByName('Name').Value := MemTableEh.FieldByName('Name').AsString;
       DataModuleSql.Ins_Subj.ExecSQL;
       GetId;
+      //Добавим основные склады
+      DataModuleSql.Ins_Wh.Parameters.ParamByName('id_subj').Value := FID;
+      DataModuleSql.Ins_Wh.Parameters.ParamByName('Name').Value := MemTableEh.FieldByName('Name').AsString+'/Основной склад';
+      DataModuleSql.Ins_Wh.ExecSQL;
+      //Добавим основные договора
+      DataModuleSql.Ins_Agr.Parameters.ParamByName('id_subj').Value := FID;
+      DataModuleSql.Ins_Agr.Parameters.ParamByName('Name').Value := MemTableEh.FieldByName('Name').AsString+'/Основной договор';
+      DataModuleSql.Ins_Agr.ExecSQL;
+
     end
    else
     begin
@@ -199,18 +208,19 @@ begin
     if FID = -1 then //новый - будем делать Insert
       begin
        cmdInsert;
-       MainForm.RefreshElementList_AUL(NameTableView, MemTableEh);
+       MainForm.RefreshElementList_AUIL(NameTableView, MemTableEh, true);
       end
     else
       begin
        cmdUpdate;
-       MainForm.RefreshElementList_AUL(NameTableView, MemTableEh);
+       MainForm.RefreshElementList_AUIL(NameTableView, MemTableEh, false);
       end;
     DataModuleSql.ADOConnection1.CommitTrans;
     if MemTableEh.State = dsEdit then
           MemTableEh.Post;
     IsChange :=false;
     Name := NameTableView + ': ' + MemTableEh.FieldByName('Name').AsString;
+    MainForm.StatusBar.Panels[1].Text :=DateTimeToStr(Now()) + ' Успешно сохранен ' + Name;
  except
       on E :EDatabaseError do
         begin
@@ -225,7 +235,7 @@ begin
       on E : Exception do
         begin
          DataModuleSql.ADOConnection1.RollbackTrans;
-         ShowMessage(E.ClassName+' поднята ошибка, с сообщением : '+E.Message);
+         ShowMessage(E.ClassName+' произошла ошибка, с сообщением : '+E.Message);
         end;
  end;
 end;

@@ -7,7 +7,7 @@ uses
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.Menus, System.Actions, Vcl.ActnList,
   Vcl.ComCtrls, Vcl.ToolWin, Vcl.ExtCtrls, Vcl.Buttons, DBGridEhGrouping,
   ToolCtrlsEh, DBGridEhToolCtrls, DynVarsEh, EhLibVCL, GridsEh, DBAxisGridsEh, DBGridEh,
-  Vcl.StdCtrls, Data.DB, Data.Win.ADODB, element;
+  Vcl.StdCtrls, Data.DB, Data.Win.ADODB, element, MemTableDataEh, MemTableEh;
 
 type
   TBaseActionElement = (Add, Copy, Edit, Delete);
@@ -45,6 +45,7 @@ type
     DBGridEh1: TDBGridEh;
     quList: TADOQuery;
     DataSource1: TDataSource;
+    MemTableEh: TMemTableEh;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure Timer1Timer(Sender: TObject);
     procedure ActionEditUpdate(Sender: TObject);
@@ -72,12 +73,11 @@ uses data_module_sql, element_sprav_obj, element_sprav_subj;
 var
  fmElementSpravObj :TFormElementSpravObj;
  fmElementSpravSubj :TFormElementSpravSubj;
+
 procedure TFormElementList.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
- quList.Close;
  Action := caFree;
 end;
-
 
 procedure TFormElementList.ActionAddCopyExecute(Sender: TObject);
 begin
@@ -101,7 +101,7 @@ end;
 
 procedure TFormElementList.ActionEditUpdate(Sender: TObject);
 begin
-  (Sender as TAction).Enabled := (not qulist.IsEmpty);
+  (Sender as TAction).Enabled := (not MemTableEh.IsEmpty);
 end;
 
 procedure TFormElementList.BaseActionElement(const Action: TBaseActionElement);
@@ -129,10 +129,10 @@ begin
      if Action = Add then  //новый
             fmElementSprav.ID := -1;
      if Action = Edit then   //редактируем существующий
-            fmElementSprav.ID := quList.FieldByName('id').AsLargeInt;
+            fmElementSprav.ID := MemTableEh.FieldByName('id').AsLargeInt;
      if Action = Copy then
       begin //копируем существующий в новый меняя ID на -1
-        fmElementSprav.ID := quList.FieldByName('id').AsLargeInt;
+        fmElementSprav.ID := MemTableEh.FieldByName('id').AsLargeInt;
         fmElementSprav.IsCopied :=true; // FID  в родителе переключится в -1;
       end;
      if Action = Delete then
@@ -147,8 +147,11 @@ begin
   quList.SQL.Add('Select * From dbo.' + NameTableView);
   quList.Open;
   quList.Last;
+  MemTableEh.LoadFromDataSet(quList, -1, lmCopy, false);
+  MemTableEh.ReadOnly :=true;
   DataModuleSql.DefFields_TDBGridEh(NameTableView, DBGridEh1);
   DBGridEh1.Visible := true;
+  quList.Close;
 end;
 
 procedure TFormElementList.Timer1Timer(Sender: TObject);

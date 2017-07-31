@@ -4,7 +4,7 @@ interface
 
 uses
   System.SysUtils, System.Classes, Data.DB, Data.Win.ADODB, EhLibVCL, GridsEh, DBAxisGridsEh,
-  DBVertGridsEh, MemTableDataEh, MemTableEh, DBGridEh, ComObj;
+  DBVertGridsEh, MemTableDataEh, MemTableEh, DBGridEh, ComObj, System.Variants;
 
 const
     v_Objects = 'v_Objects';
@@ -23,6 +23,12 @@ type
     Ins_Subj: TADOQuery;
     Upd_Subj: TADOQuery;
     Del_Subj: TADOQuery;
+    Ins_Wh: TADOQuery;
+    Upd_Wh: TADOQuery;
+    Del_Wh: TADOQuery;
+    Ins_Agr: TADOQuery;
+    Upd_Agr: TADOQuery;
+    Del_Agr: TADOQuery;
   private
     { Private declarations }
   public
@@ -43,6 +49,38 @@ implementation
 {$R *.dfm}
 
 { TDataModuleSql }
+procedure AssignRecord(Source, Destination: TDataSet);
+var
+  i: Integer;
+  Field: TField;
+begin
+  for i := 0 to Destination.FieldCount-1 do
+    if Destination.Fields[i].FieldNo > 0 then
+    begin
+      Field := Source.FindField(Destination.Fields[i].FieldName);
+      if Field <> nil then
+        Destination.Fields[i].Value := Field.Value;
+    end;
+end;
+
+procedure AppendCurrent(Dataset:Tdataset);
+var
+  aField: Variant ;
+  i: Integer ;
+begin
+  // Создаём массив
+  aField := VarArrayCreate([0,DataSet.Fieldcount-1],VarVariant);
+
+  // считываем значения в массив
+  for i := 0 to (DataSet.Fieldcount-1) do
+    aField[i] := DataSet.fields[i].Value ;
+
+  DataSet.Append ;
+
+  // помещаем значения массива в новую запись
+  for i := 0 to (DataSet.Fieldcount-1) do
+    DataSet.fields[i].Value := aField[i] ;
+end;
 
 procedure TDataModuleSql.DefFields_TDBGridEh(const NameTableView: string;
   const DBGridEh: TDBGridEh);

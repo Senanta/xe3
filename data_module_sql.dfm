@@ -159,4 +159,142 @@ object DataModuleSql: TDataModuleSql
     Left = 304
     Top = 56
   end
+  object Ins_Wh: TADOQuery
+    Connection = ADOConnection1
+    CursorType = ctStatic
+    ExecuteOptions = [eoExecuteNoRecords]
+    LockType = ltReadOnly
+    Parameters = <
+      item
+        Name = 'id_subj'
+        DataType = ftLargeint
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'Name'
+        DataType = ftString
+        Size = -1
+        Value = Null
+      end>
+    Prepared = True
+    SQL.Strings = (
+      'Insert Into dbo.Warehouses (id_subj, Name) '
+      'Values (:id_subj, Left(:Name,150))')
+    Left = 208
+    Top = 104
+  end
+  object Upd_Wh: TADOQuery
+    Connection = ADOConnection1
+    CursorType = ctStatic
+    ExecuteOptions = [eoExecuteNoRecords]
+    LockType = ltReadOnly
+    Parameters = <
+      item
+        Name = 'Name'
+        DataType = ftString
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'id'
+        DataType = ftLargeint
+        Size = -1
+        Value = Null
+      end>
+    Prepared = True
+    SQL.Strings = (
+      'Update dbo.Warehouses Set Name=Left(:Name,150) '
+      'Where id = :id')
+    Left = 256
+    Top = 104
+  end
+  object Del_Wh: TADOQuery
+    Connection = ADOConnection1
+    CursorType = ctStatic
+    ExecuteOptions = [eoExecuteNoRecords]
+    LockType = ltReadOnly
+    Parameters = <
+      item
+        Name = 'id'
+        DataType = ftLargeint
+        Size = -1
+        Value = Null
+      end>
+    Prepared = True
+    SQL.Strings = (
+      'Update dbo.Warehouses Set IsDeleted = 1'
+      'Where id = :id')
+    Left = 304
+    Top = 104
+  end
+  object Ins_Agr: TADOQuery
+    Connection = ADOConnection1
+    CursorType = ctStatic
+    ExecuteOptions = [eoExecuteNoRecords]
+    LockType = ltReadOnly
+    Parameters = <
+      item
+        Name = 'id_subj'
+        DataType = ftLargeint
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'Name'
+        DataType = ftString
+        Size = -1
+        Value = Null
+      end>
+    Prepared = True
+    SQL.Strings = (
+      'Insert Into dbo.Agreements (id_subj, Name) '
+      'Values (:id_subj, Left(:Name,75))')
+    Left = 208
+    Top = 152
+  end
+  object Upd_Agr: TADOQuery
+    Connection = ADOConnection1
+    CursorType = ctStatic
+    ExecuteOptions = [eoExecuteNoRecords]
+    LockType = ltReadOnly
+    Parameters = <
+      item
+        Name = 'Name'
+        DataType = ftString
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'id'
+        DataType = ftLargeint
+        Size = -1
+        Value = Null
+      end>
+    Prepared = True
+    SQL.Strings = (
+      'Update dbo.Agreements Set Name=Left(:Name,75) '
+      'Where id = :id')
+    Left = 256
+    Top = 152
+  end
+  object Del_Agr: TADOQuery
+    Connection = ADOConnection1
+    CursorType = ctStatic
+    ExecuteOptions = [eoExecuteNoRecords]
+    LockType = ltReadOnly
+    Parameters = <
+      item
+        Name = 'id'
+        DataType = ftLargeint
+        Size = -1
+        Value = Null
+      end>
+    Prepared = True
+    SQL.Strings = (
+      'Update dbo.Agreements Set IsDeleted = 1'
+      'Where id = :id')
+    Left = 304
+    Top = 152
+  end
 end
