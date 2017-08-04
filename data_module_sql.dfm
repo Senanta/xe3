@@ -9,6 +9,7 @@ object DataModuleSql: TDataModuleSql
     KeepConnection = False
     LoginPrompt = False
     Provider = 'SQLOLEDB'
+    OnExecuteComplete = ADOConnection1ExecuteComplete
     Left = 35
     Top = 8
   end
@@ -20,7 +21,7 @@ object DataModuleSql: TDataModuleSql
     CommandTimeout = 3600
     ParamCheck = False
     Parameters = <>
-    Left = 96
+    Left = 128
     Top = 56
   end
   object Ins_Obj: TADOQuery
@@ -73,6 +74,12 @@ object DataModuleSql: TDataModuleSql
     LockType = ltReadOnly
     Parameters = <
       item
+        Name = 'flag'
+        DataType = ftBoolean
+        Size = -1
+        Value = Null
+      end
+      item
         Name = 'id'
         DataType = ftLargeint
         Size = -1
@@ -80,7 +87,7 @@ object DataModuleSql: TDataModuleSql
       end>
     Prepared = True
     SQL.Strings = (
-      'Update dbo.Objects Set IsDeleted = 1'
+      'Update dbo.Objects Set IsDeleted = :flag'
       'Where id = :id')
     Left = 304
     Top = 8
@@ -147,6 +154,12 @@ object DataModuleSql: TDataModuleSql
     LockType = ltReadOnly
     Parameters = <
       item
+        Name = 'flag'
+        DataType = ftBoolean
+        Size = -1
+        Value = Null
+      end
+      item
         Name = 'id'
         DataType = ftLargeint
         Size = -1
@@ -154,7 +167,7 @@ object DataModuleSql: TDataModuleSql
       end>
     Prepared = True
     SQL.Strings = (
-      'Update dbo.Subjects Set IsDeleted = 1'
+      'Update dbo.Subjects Set IsDeleted = :flag'
       'Where id = :id')
     Left = 304
     Top = 56
@@ -216,6 +229,12 @@ object DataModuleSql: TDataModuleSql
     LockType = ltReadOnly
     Parameters = <
       item
+        Name = 'flag'
+        DataType = ftBoolean
+        Size = -1
+        Value = Null
+      end
+      item
         Name = 'id'
         DataType = ftLargeint
         Size = -1
@@ -223,7 +242,7 @@ object DataModuleSql: TDataModuleSql
       end>
     Prepared = True
     SQL.Strings = (
-      'Update dbo.Warehouses Set IsDeleted = 1'
+      'Update dbo.Warehouses Set IsDeleted = :flag'
       'Where id = :id')
     Left = 304
     Top = 104
@@ -285,6 +304,12 @@ object DataModuleSql: TDataModuleSql
     LockType = ltReadOnly
     Parameters = <
       item
+        Name = 'flag'
+        DataType = ftBoolean
+        Size = -1
+        Value = Null
+      end
+      item
         Name = 'id'
         DataType = ftLargeint
         Size = -1
@@ -292,9 +317,43 @@ object DataModuleSql: TDataModuleSql
       end>
     Prepared = True
     SQL.Strings = (
-      'Update dbo.Agreements Set IsDeleted = 1'
+      'Update dbo.Agreements Set IsDeleted = :flag'
       'Where id = :id')
     Left = 304
     Top = 152
+  end
+  object conLog: TADOConnection
+    CommandTimeout = 0
+    ConnectionTimeout = 17
+    IsolationLevel = ilReadCommitted
+    KeepConnection = False
+    LoginPrompt = False
+    Provider = 'SQLOLEDB'
+    OnExecuteComplete = ADOConnection1ExecuteComplete
+    Left = 35
+    Top = 56
+  end
+  object Ins_Log: TADOQuery
+    Connection = conLog
+    CursorType = ctStatic
+    ExecuteOptions = [eoExecuteNoRecords]
+    LockType = ltReadOnly
+    Parameters = <
+      item
+        Name = 'CommandText'
+        DataType = ftString
+        Size = -1
+        Value = Null
+      end>
+    Prepared = True
+    SQL.Strings = (
+      'Insert Into dbo.dbLog (CommandText) Values (:CommandText)')
+    Left = 72
+    Top = 56
+  end
+  object ADOCommand1: TADOCommand
+    Parameters = <>
+    Left = 408
+    Top = 96
   end
 end

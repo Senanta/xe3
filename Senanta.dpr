@@ -11,7 +11,8 @@ uses
   element_list_doc in 'element_list_doc.pas' {FormElementListDoc},
   element_list_sprav in 'element_list_sprav.pas' {FormElementListSprav},
   data_module_sql in 'data_module_sql.pas' {DataModuleSql: TDataModule},
-  element_sprav_subj in 'element_sprav_subj.pas' {FormElementSpravSubj};
+  element_sprav_subj in 'element_sprav_subj.pas' {FormElementSpravSubj},
+  refresh in 'refresh.pas';
 
 {$R *.RES}
 

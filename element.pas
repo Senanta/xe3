@@ -57,7 +57,7 @@ type
   end;
 
 implementation
-uses data_module_sql, main;
+uses data_module_sql, refresh;
 {$R *.dfm}
 
 procedure TFormElement.ActionCloseExecute(Sender: TObject);
@@ -208,19 +208,18 @@ begin
     if FID = -1 then //новый - будем делать Insert
       begin
        cmdInsert;
-       MainForm.RefreshElementList_AUIL(NameTableView, MemTableEh, true);
+       RefreshElementList_AUIL(NameTableView, MemTableEh, true);
       end
     else
       begin
        cmdUpdate;
-       MainForm.RefreshElementList_AUIL(NameTableView, MemTableEh, false);
+       RefreshElementList_AUIL(NameTableView, MemTableEh, false);
       end;
     DataModuleSql.ADOConnection1.CommitTrans;
     if MemTableEh.State = dsEdit then
           MemTableEh.Post;
     IsChange :=false;
     Name := NameTableView + ': ' + MemTableEh.FieldByName('Name').AsString;
-    MainForm.StatusBar.Panels[1].Text :=DateTimeToStr(Now()) + ' Успешно сохранен ' + Name;
  except
       on E :EDatabaseError do
         begin

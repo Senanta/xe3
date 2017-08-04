@@ -89,10 +89,6 @@ type
     { Private declarations }
   public
     { Public declarations }
-   ///<Summary>
-    ///RefreshList_AfterUpdateInsertLocal Обновить спиcок данных локально
-    ///  </Summary>
-    procedure RefreshElementList_AUIL(const NameTableView :string; const DataSet :TDataSet; Insert :Boolean);
   end;
 
 var
@@ -131,68 +127,6 @@ begin
   AboutBox.ShowModal;
 end;
 
-procedure TMainForm.RefreshElementList_AUIL(const NameTableView: string;
-  const DataSet: TDataSet; Insert :Boolean);
-procedure AssignRecord(Source, Destination: TDataSet);
-var
-  i: Integer;
-  Field: TField;
-begin
-  for i := 0 to Destination.FieldCount-1 do
-    if Destination.Fields[i].FieldNo > 0 then
-    begin
-      Field := Source.FindField(Destination.Fields[i].FieldName);
-      if (Field <> nil) and (not Field.ReadOnly) then
-        Destination.Fields[i].Value := Field.Value;
-    end;
-end;
-  var
-    i :integer;
-begin
-i := MDIChildCount - 1;
- while i >= 0 do
-   begin
-    if MDIChildren[i] is TFormElementList then
-        begin
-            if TFormElementList(MDIChildren[i]).NameTableView = NameTableView then
-                begin
-                     TFormElementList(MDIChildren[i]).MemTableEh.DisableControls; //Внимательней на LargeInt
-                     TFormElementList(MDIChildren[i]).MemTableEh.ReadOnly := false;
-
-                     if insert then
-                      begin
-                        TFormElementList(MDIChildren[i]).MemTableEh.FieldByName('ID').ReadOnly := false;
-                        TFormElementList(MDIChildren[i]).MemTableEh.Append;
-                        TFormElementList(MDIChildren[i]).MemTableEh.FieldByName('ID').AsLargeInt :=DataSet.FieldByName('ID').AsLargeInt;
-                        TFormElementList(MDIChildren[i]).MemTableEh.FieldByName('ID').ReadOnly := true;
-                      end;
-
-                     if TFormElementList(MDIChildren[i]).MemTableEh.Locate('ID', DataSet.FieldByName('ID').AsLargeInt, [loCaseInsensitive]) then
-                      begin
-                        TFormElementList(MDIChildren[i]).MemTableEh.Edit; //Меняем значения полей найденой записи на новые
-                        try
-                            AssignRecord(DataSet, TFormElementList(MDIChildren[i]).MemTableEh);
-                        except
-                          on E :EDatabaseError do
-                            begin
-                             ShowMessage(E.ClassName+' : Попытка AssignRecord выполнения завершилась неудачно '+E.Message);
-                            end;
-                          on E : Exception do
-                            begin
-                             ShowMessage(E.ClassName+' произошла ошибка, с сообщением : '+E.Message);
-                            end;
-                        end;
-                      end;
-                     TFormElementList(MDIChildren[i]).MemTableEh.Post;
-                     TFormElementList(MDIChildren[i]).MemTableEh.ReadOnly := true;
-                     TFormElementList(MDIChildren[i]).MemTableEh.EnableControls;
-                end;
-
-        end;
-    i := i - 1;
-   end;
-end;
-
 procedure TMainForm.ActionExecute(Sender: TObject);
 begin
    fmElementListSprav := TFormElementListSprav.Create(Application);
@@ -214,6 +148,8 @@ try
     readln(f, buf);
     DataModuleSql.AdoConnection1.ConnectionString :='FILE NAME='+fName;
     DataModuleSql.AdoConnection1.Connected :=true;
+    DataModuleSql.conLog.ConnectionString := DataModuleSql.AdoConnection1.ConnectionString;
+    DataModuleSql.conLog.Connected :=true;
     StatusBar.Panels[1].Text :='Подключение..Ок!';
    except
         on E :EInOutError do

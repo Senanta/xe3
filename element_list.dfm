@@ -118,6 +118,7 @@ object FormElementList: TFormElementList
       DynProps = <>
       TabOrder = 0
       Visible = False
+      OnDrawColumnCell = DBGridEh1DrawColumnCell
       object RowDetailData: TRowDetailPanelControlEh
       end
     end

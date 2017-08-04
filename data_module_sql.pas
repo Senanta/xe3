@@ -29,6 +29,12 @@ type
     Ins_Agr: TADOQuery;
     Upd_Agr: TADOQuery;
     Del_Agr: TADOQuery;
+    conLog: TADOConnection;
+    Ins_Log: TADOQuery;
+    ADOCommand1: TADOCommand;
+    procedure ADOConnection1ExecuteComplete(Connection: TADOConnection;
+        RecordsAffected: Integer; const Error: Error; var EventStatus:
+        TEventStatus; const Command: _Command; const Recordset: _Recordset);
   private
     { Private declarations }
   public
@@ -37,6 +43,7 @@ type
     procedure DefFields_TDBVertGridEh(const NameTableView :string; const DBVertGridEh :TDBVertGridEh);
     procedure DefFields_TDBGridEh(const NameTableView :string; const DBGridEh :TDBGridEh);
     function GetId :LargeInt;
+    procedure ModifyDataSet(ADataSet: TDataSet);
   end;
 
 var
@@ -82,6 +89,30 @@ begin
     DataSet.fields[i].Value := aField[i] ;
 end;
 
+procedure TDataModuleSql.ADOConnection1ExecuteComplete(Connection:
+    TADOConnection; RecordsAffected: Integer; const Error: Error; var
+    EventStatus: TEventStatus; const Command: _Command; const Recordset:
+    _Recordset);
+var
+  i :Integer;
+  s :string;
+begin
+  if EventStatus = esOK   then  //Пишем в Log
+   begin
+     s := Command.CommandText;
+     for i := 0 to Command.Parameters.Count - 1 do
+      begin
+       s := s + ' :' + Command.Parameters[i].Name;
+       s := s + '=' + VarToStr(Command.Parameters[i].Value);
+      end;
+     if (Pos('Insert', s) > 0) or (Pos('Update', s) > 0) then
+      begin
+       Ins_Log.Parameters.ParamByName('CommandText').Value := s;
+       Ins_Log.ExecSQL;
+      end;
+   end;
+end;
+
 procedure TDataModuleSql.DefFields_TDBGridEh(const NameTableView: string;
   const DBGridEh: TDBGridEh);
 var
@@ -94,6 +125,8 @@ begin
     quTmp.First;
     for i := 0 to DBGridEh.Columns.Count - 1 do
         begin
+         if DBGridEh.Columns[i].FieldName = 'Img' then
+              DBGridEh.Columns[i].TextEditing :=False;
          if quTmp.Locate('fieldName', DBGridEh.Columns[i].FieldName, [loCaseInsensitive]) then
             begin
              if quTmp.FieldByName('DisplayWidth').AsInteger > 0 then
@@ -155,4 +188,61 @@ begin
   quIdentity.Close;
 end;
 
+procedure TDataModuleSql.ModifyDataSet(ADataSet: TDataSet);
+{var
+ i: Integer;
+  Field: TStringField;
+  FieldName: string;
+  //LookupEnt: TEntity;
+  FldCnt: Integer;
+  IsLookup: Boolean;
+  BM: TBookMark;}
+begin
+
+{BM := ADataSet.GetBookMark;
+  ADataSet.Close;
+  FldCnt := 0;
+  ADataSet.Fields.Clear;
+  for i := 0 to ADataSet.FieldDefs.Count - 1 do
+  begin
+    if not ADataSet.FieldDefs.Updated then
+      ADataSet.FieldDefs.Update;
+    if ADataSet.FindField(ADataSet.FieldDefs[i].Name) = nil then
+      ADataSet.FieldDefs[i].CreateField(ADataSet);
+    // если это ссылочное поле
+    IsLookup := (Pos('ID_', ADataSet.FieldDefs[i].Name) <> 0); // дополнительные условия отрезаны
+    if IsLookup then
+    try
+      FieldName := ADataSet.FieldDefs[i].Name;
+      Delete(FieldName, 1, 3); // delete 'ID_'
+      Field := TWideStringField.Create(nil);
+      Field.Size := 128;
+      Field.FieldName := FieldName;
+      Field.FieldKind := fkLookup;
+      Field.KeyFields := ADataSet.FieldDefs[i].Name;
+      // определим на что ссылается, у меня в проекте это Сущность/Entity
+      //LookupEnt := TEntity(EnumValue(EntP, FieldName, 'xe'));
+      // спец. менеджер выдаёт нужный датасет для данной энтити
+      //Field.LookupDataSet := Manager.GetData(LookupEnt);
+      // биндим поле которое будет источником инфы по ссылке
+      //FLookupField := 'Caption';
+      //if not Assigned(Field.LookupDataSet.FindField(FLookupField)) then
+        //FLookupField := 'Name';
+      //Field.LookupResultField := FLookupField;
+      Field.DisplayWidth := //MinWd + 1;
+//      Field.LookupKeyFields := 'ID';
+      Field.DataSet := ADataSet;
+    except
+      raise;
+    end;
+    // дообработка в наследниках формы
+    //SpecModifying(FldCnt, ADataSet.Fielddefs[i].Name, IsLookup);
+    // учёт "системных" полей таблицы
+    if not (AnsiSameText('ID', ADataSet.FieldDefs[i].Name) or
+      AnsiSameText('IsDeleted', ADataSet.FieldDefs[i].Name)) then
+      Inc(FldCnt);
+  end;
+  ADataSet.Open;
+  //GotoBookMark(ADataSet, BM);}
+end;
 end.
