@@ -6,10 +6,71 @@ uses
   //--------------------------------------------------------------------------------------
   main, element_list;
 
- procedure RefreshElementList_AUIL(const NameTableView :string; const DataSet :TDataSet; Insert :Boolean);
+ procedure AssignRecord(Source, Destination: TDataSet);
+ procedure RefreshElementList_AIL(const NameTableView: string; const DataSet :TDataSet);
+ procedure RefreshElementList_AUL(const NameTableView :string; const DataSet :TDataSet);
  procedure RefreshElementList_ADL(const NameTableView: string;  const ID :Largeint);
 
 implementation
+
+procedure AssignRecord(Source, Destination: TDataSet);
+  var
+    i: Integer;
+    Field: TField;
+begin
+  for i := 0 to Destination.FieldCount-1 do
+    if Destination.Fields[i].FieldNo > 0 then
+    begin
+      Field := Source.FindField(Destination.Fields[i].FieldName);
+      if (Field <> nil) and (not Field.ReadOnly) then
+        Destination.Fields[i].Value := Field.Value;
+    end;
+end;
+
+procedure RefreshElementList_AIL(const NameTableView: string;
+  const DataSet: TDataSet);
+var
+    i :integer;
+begin
+i := MainForm.MDIChildCount - 1;
+ while i >= 0 do
+   begin
+    if MainForm.MDIChildren[i] is TFormElementList then
+     begin
+         if TFormElementList(MainForm.MDIChildren[i]).NameTableView = NameTableView then
+          begin
+               TFormElementList(MainForm.MDIChildren[i]).MemTableEh.DisableControls; //Внимательней на LargeInt
+               TFormElementList(MainForm.MDIChildren[i]).MemTableEh.ReadOnly := false;
+
+                  TFormElementList(MainForm.MDIChildren[i]).MemTableEh.FieldByName('ID').ReadOnly := false;
+                  TFormElementList(MainForm.MDIChildren[i]).MemTableEh.Append;
+                  TFormElementList(MainForm.MDIChildren[i]).MemTableEh.FieldByName('ID').AsLargeInt :=DataSet.FieldByName('ID').AsLargeInt;
+                  TFormElementList(MainForm.MDIChildren[i]).MemTableEh.FieldByName('ID').ReadOnly := true;
+                  try
+                      AssignRecord(DataSet, TFormElementList(MainForm.MDIChildren[i]).MemTableEh);
+                      MainForm.StatusBar.Panels[1].Text :=DateTimeToStr(Now()) + ' Успешно добавлен ' + NameTableView + ': ' + DataSet.FieldByName('Name').AsString;
+                  except
+                    on E :EDatabaseError do
+                      begin
+                       ShowMessage(E.ClassName+' : Попытка AssignRecord выполнения завершилась неудачно '+E.Message);
+                      end;
+                    on E : Exception do
+                      begin
+                       ShowMessage(E.ClassName+' произошла ошибка, с сообщением : '+E.Message);
+                      end;
+                  end;
+
+               if (TFormElementList(MainForm.MDIChildren[i]).MemTableEh.State = dsEdit) or
+                  (TFormElementList(MainForm.MDIChildren[i]).MemTableEh.State = dsInsert) then
+                                TFormElementList(MainForm.MDIChildren[i]).MemTableEh.Post;
+               TFormElementList(MainForm.MDIChildren[i]).MemTableEh.ReadOnly := true;
+               TFormElementList(MainForm.MDIChildren[i]).MemTableEh.EnableControls;
+          end;
+
+     end;
+    i := i - 1;
+   end;
+end;
 
 procedure RefreshElementList_ADL(const NameTableView: string;  const ID :Largeint);
 var
@@ -49,22 +110,8 @@ i := MainForm.MDIChildCount - 1;
    end;
 end;
 
-procedure RefreshElementList_AUIL(const NameTableView: string;
-  const DataSet: TDataSet; Insert :Boolean);
-
-  procedure AssignRecord(Source, Destination: TDataSet);
-  var
-    i: Integer;
-    Field: TField;
-  begin
-    for i := 0 to Destination.FieldCount-1 do
-      if Destination.Fields[i].FieldNo > 0 then
-      begin
-        Field := Source.FindField(Destination.Fields[i].FieldName);
-        if (Field <> nil) and (not Field.ReadOnly) then
-          Destination.Fields[i].Value := Field.Value;
-      end;
-  end;
+procedure RefreshElementList_AUL(const NameTableView: string;
+  const DataSet: TDataSet);
 var
     i :integer;
 begin
@@ -77,14 +124,6 @@ i := MainForm.MDIChildCount - 1;
           begin
                TFormElementList(MainForm.MDIChildren[i]).MemTableEh.DisableControls; //Внимательней на LargeInt
                TFormElementList(MainForm.MDIChildren[i]).MemTableEh.ReadOnly := false;
-
-               if insert then
-                begin
-                  TFormElementList(MainForm.MDIChildren[i]).MemTableEh.FieldByName('ID').ReadOnly := false;
-                  TFormElementList(MainForm.MDIChildren[i]).MemTableEh.Append;
-                  TFormElementList(MainForm.MDIChildren[i]).MemTableEh.FieldByName('ID').AsLargeInt :=DataSet.FieldByName('ID').AsLargeInt;
-                  TFormElementList(MainForm.MDIChildren[i]).MemTableEh.FieldByName('ID').ReadOnly := true;
-                end;
 
                if TFormElementList(MainForm.MDIChildren[i]).MemTableEh.Locate('ID', DataSet.FieldByName('ID').AsLargeInt, [loCaseInsensitive]) then
                 begin
@@ -103,7 +142,9 @@ i := MainForm.MDIChildCount - 1;
                       end;
                   end;
                 end;
-               TFormElementList(MainForm.MDIChildren[i]).MemTableEh.Post;
+               if (TFormElementList(MainForm.MDIChildren[i]).MemTableEh.State = dsEdit) or
+                  (TFormElementList(MainForm.MDIChildren[i]).MemTableEh.State = dsInsert) then
+                                TFormElementList(MainForm.MDIChildren[i]).MemTableEh.Post;
                TFormElementList(MainForm.MDIChildren[i]).MemTableEh.ReadOnly := true;
                TFormElementList(MainForm.MDIChildren[i]).MemTableEh.EnableControls;
           end;

@@ -4,6 +4,7 @@ inherited FormElementSpravSubj: TFormElementSpravSubj
   TextHeight = 13
   inherited PanelMiddle: TPanel
     inherited PropertyPages: TPageControl
+      ActivePage = TabSheetAgreements
       object TabSheetAgreements: TTabSheet
         Caption = #1044#1086#1075#1086#1074#1086#1088#1099
         ImageIndex = 1

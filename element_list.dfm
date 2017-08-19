@@ -112,13 +112,22 @@ object FormElementList: TFormElementList
     object DBGridEh1: TDBGridEh
       Left = 2
       Top = 2
-      Width = 511
-      Height = 199
+      Width = 621
+      Height = 224
+      Align = alClient
       DataSource = DataSource1
       DynProps = <>
+      HorzScrollBar.ExtraPanel.NavigatorButtons = [nbFirstEh, nbPriorEh, nbNextEh, nbLastEh]
+      HorzScrollBar.ExtraPanel.Visible = True
+      OptionsEh = [dghFixed3D, dghHighlightFocus, dghClearSelection, dghAutoSortMarking, dghMultiSortMarking, dghDialogFind, dghColumnResize, dghColumnMove, dghExtendVertLines]
+      SearchPanel.Enabled = True
+      SearchPanel.Location = splHorzScrollBarExtraPanelEh
+      STFilter.Local = True
+      STFilter.Location = stflInTitleFilterEh
       TabOrder = 0
       Visible = False
       OnDrawColumnCell = DBGridEh1DrawColumnCell
+      OnSortMarkingChanged = DBGridEh1SortMarkingChanged
       object RowDetailData: TRowDetailPanelControlEh
       end
     end
@@ -177,7 +186,7 @@ object FormElementList: TFormElementList
       Caption = #1059#1076#1072#1083#1080#1090#1100
       ImageIndex = 28
       OnExecute = ActionDeleteExecute
-      OnUpdate = ActionEditUpdate
+      OnUpdate = ActionDeleteUpdate
     end
   end
   object Timer1: TTimer
@@ -202,6 +211,8 @@ object FormElementList: TFormElementList
     Top = 126
   end
   object MemTableEh: TMemTableEh
+    Filtered = True
+    FetchAllOnOpen = True
     Params = <>
     Left = 448
     Top = 126

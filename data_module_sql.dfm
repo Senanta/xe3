@@ -6,7 +6,6 @@ object DataModuleSql: TDataModuleSql
     CommandTimeout = 0
     ConnectionTimeout = 17
     IsolationLevel = ilReadCommitted
-    KeepConnection = False
     LoginPrompt = False
     Provider = 'SQLOLEDB'
     OnExecuteComplete = ADOConnection1ExecuteComplete
@@ -55,6 +54,12 @@ object DataModuleSql: TDataModuleSql
         Value = Null
       end
       item
+        Name = 'Code'
+        DataType = ftString
+        Size = -1
+        Value = Null
+      end
+      item
         Name = 'id'
         DataType = ftLargeint
         Size = -1
@@ -62,7 +67,7 @@ object DataModuleSql: TDataModuleSql
       end>
     Prepared = True
     SQL.Strings = (
-      'Update dbo.Objects Set Name=:Name '
+      'Update dbo.Objects Set Name=:Name, Code=:Code '
       'Where id = :id')
     Left = 256
     Top = 8
@@ -74,7 +79,7 @@ object DataModuleSql: TDataModuleSql
     LockType = ltReadOnly
     Parameters = <
       item
-        Name = 'flag'
+        Name = 'IsDeleted'
         DataType = ftBoolean
         Size = -1
         Value = Null
@@ -87,7 +92,7 @@ object DataModuleSql: TDataModuleSql
       end>
     Prepared = True
     SQL.Strings = (
-      'Update dbo.Objects Set IsDeleted = :flag'
+      'Update dbo.Objects Set IsDeleted = :IsDeleted'
       'Where id = :id')
     Left = 304
     Top = 8
@@ -135,6 +140,12 @@ object DataModuleSql: TDataModuleSql
         Value = Null
       end
       item
+        Name = 'Code'
+        DataType = ftString
+        Size = -1
+        Value = Null
+      end
+      item
         Name = 'id'
         DataType = ftLargeint
         Size = -1
@@ -142,7 +153,7 @@ object DataModuleSql: TDataModuleSql
       end>
     Prepared = True
     SQL.Strings = (
-      'Update dbo.Subjects Set Name=:Name '
+      'Update dbo.Subjects Set Name=:Name,Code=:Code '
       'Where id = :id')
     Left = 256
     Top = 56
@@ -154,7 +165,7 @@ object DataModuleSql: TDataModuleSql
     LockType = ltReadOnly
     Parameters = <
       item
-        Name = 'flag'
+        Name = 'IsDeleted'
         DataType = ftBoolean
         Size = -1
         Value = Null
@@ -167,7 +178,7 @@ object DataModuleSql: TDataModuleSql
       end>
     Prepared = True
     SQL.Strings = (
-      'Update dbo.Subjects Set IsDeleted = :flag'
+      'Update dbo.Subjects Set IsDeleted = :IsDeleted'
       'Where id = :id')
     Left = 304
     Top = 56
@@ -210,6 +221,12 @@ object DataModuleSql: TDataModuleSql
         Value = Null
       end
       item
+        Name = 'Code'
+        DataType = ftString
+        Size = -1
+        Value = Null
+      end
+      item
         Name = 'id'
         DataType = ftLargeint
         Size = -1
@@ -217,7 +234,7 @@ object DataModuleSql: TDataModuleSql
       end>
     Prepared = True
     SQL.Strings = (
-      'Update dbo.Warehouses Set Name=Left(:Name,150) '
+      'Update dbo.Warehouses Set Name=Left(:Name,150),Code=:Code '
       'Where id = :id')
     Left = 256
     Top = 104
@@ -229,7 +246,7 @@ object DataModuleSql: TDataModuleSql
     LockType = ltReadOnly
     Parameters = <
       item
-        Name = 'flag'
+        Name = 'IsDeleted'
         DataType = ftBoolean
         Size = -1
         Value = Null
@@ -242,7 +259,7 @@ object DataModuleSql: TDataModuleSql
       end>
     Prepared = True
     SQL.Strings = (
-      'Update dbo.Warehouses Set IsDeleted = :flag'
+      'Update dbo.Warehouses Set IsDeleted = :IsDeleted'
       'Where id = :id')
     Left = 304
     Top = 104
@@ -268,7 +285,7 @@ object DataModuleSql: TDataModuleSql
     Prepared = True
     SQL.Strings = (
       'Insert Into dbo.Agreements (id_subj, Name) '
-      'Values (:id_subj, Left(:Name,75))')
+      'Values (:id_subj, Left(:Name,175))')
     Left = 208
     Top = 152
   end
@@ -285,6 +302,12 @@ object DataModuleSql: TDataModuleSql
         Value = Null
       end
       item
+        Name = 'Code'
+        DataType = ftString
+        Size = -1
+        Value = Null
+      end
+      item
         Name = 'id'
         DataType = ftLargeint
         Size = -1
@@ -292,7 +315,7 @@ object DataModuleSql: TDataModuleSql
       end>
     Prepared = True
     SQL.Strings = (
-      'Update dbo.Agreements Set Name=Left(:Name,75) '
+      'Update dbo.Agreements Set Name=Left(:Name,175),Code=:Code '
       'Where id = :id')
     Left = 256
     Top = 152
@@ -304,7 +327,7 @@ object DataModuleSql: TDataModuleSql
     LockType = ltReadOnly
     Parameters = <
       item
-        Name = 'flag'
+        Name = 'IsDeleted'
         DataType = ftBoolean
         Size = -1
         Value = Null
@@ -317,7 +340,7 @@ object DataModuleSql: TDataModuleSql
       end>
     Prepared = True
     SQL.Strings = (
-      'Update dbo.Agreements Set IsDeleted = :flag'
+      'Update dbo.Agreements Set IsDeleted = :IsDeleted'
       'Where id = :id')
     Left = 304
     Top = 152
@@ -326,10 +349,8 @@ object DataModuleSql: TDataModuleSql
     CommandTimeout = 0
     ConnectionTimeout = 17
     IsolationLevel = ilReadCommitted
-    KeepConnection = False
     LoginPrompt = False
     Provider = 'SQLOLEDB'
-    OnExecuteComplete = ADOConnection1ExecuteComplete
     Left = 35
     Top = 56
   end
@@ -355,5 +376,39 @@ object DataModuleSql: TDataModuleSql
     Parameters = <>
     Left = 408
     Top = 96
+  end
+  object quUpdate_fldCode: TADOQuery
+    Connection = ADOConnection1
+    CursorType = ctStatic
+    ExecuteOptions = [eoExecuteNoRecords]
+    LockType = ltReadOnly
+    Parameters = <
+      item
+        Name = 'Code'
+        DataType = ftString
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'id'
+        DataType = ftLargeint
+        Size = -1
+        Value = Null
+      end>
+    Prepared = True
+    SQL.Strings = (
+      'Update dbo.Objects Set Code=:Code'
+      'Where id=:id')
+    Left = 128
+    Top = 112
+  end
+  object conImport: TADOConnection
+    CommandTimeout = 0
+    ConnectionTimeout = 17
+    IsolationLevel = ilReadCommitted
+    LoginPrompt = False
+    Provider = 'SQLOLEDB'
+    Left = 35
+    Top = 104
   end
 end

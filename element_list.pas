@@ -8,12 +8,12 @@ uses
   Vcl.ComCtrls, Vcl.ToolWin, Vcl.ExtCtrls, Vcl.Buttons, DBGridEhGrouping,
   ToolCtrlsEh, DBGridEhToolCtrls, DynVarsEh, EhLibVCL, GridsEh, DBAxisGridsEh, DBGridEh,
   Vcl.StdCtrls, Data.DB, Data.Win.ADODB, MemTableDataEh, MemTableEh, System.ImageList,
-  Vcl.ImgList,
+  Vcl.ImgList, EhLibMTE,
   //--------------------------------------------------------------------------------------
   element;
 
 type
-  TBaseActionElement = (Add, Copy, Edit);
+  TBaseActionElement = (AddElement, CopyElement, EditElement);
 
  ///<summary>
  ///  Форма для отображения списка элементов
@@ -56,15 +56,19 @@ type
     procedure ActionAddCopyExecute(Sender: TObject);
     procedure ActionEditExecute(Sender: TObject);
     procedure ActionDeleteExecute(Sender: TObject);
+    procedure ActionDeleteUpdate(Sender: TObject);
     procedure DBGridEh1DrawColumnCell(Sender: TObject; const Rect: TRect; DataCol:
         Integer; Column: TColumnEh; State: TGridDrawState);
+    procedure DBGridEh1SortMarkingChanged(Sender: TObject);
   private
     { Private declarations }
     FNameTableView :String; // Имя вьюва или таблицы для выбора
+    FDelable :Boolean;
+    function SetDelable: Boolean;
   public
-    { Public declarations }
+    property Delable: Boolean read FDelable write FDelable;
     property NameTableView         :string read FNameTableView write FNameTableView;
-    procedure DataInit();
+    procedure DataInit;
     procedure BaseActionElement(const Action: TBaseActionElement);
     procedure Delete;
     procedure InitFormElement(const fmElementSprav: TFormElement; const Action: TBaseActionElement);
@@ -87,12 +91,12 @@ end;
 
 procedure TFormElementList.ActionAddCopyExecute(Sender: TObject);
 begin
- BaseActionElement(Copy);
+ BaseActionElement(CopyElement);
 end;
 
 procedure TFormElementList.ActionAddExecute(Sender: TObject);
 begin
- BaseActionElement(Add);
+ BaseActionElement(AddElement);
 end;
 
 procedure TFormElementList.ActionDeleteExecute(Sender: TObject);
@@ -100,9 +104,14 @@ begin
   Delete;
 end;
 
+procedure TFormElementList.ActionDeleteUpdate(Sender: TObject);
+begin
+ (Sender as TAction).Enabled :=(not MemTableEh.IsEmpty) and Delable;
+end;
+
 procedure TFormElementList.ActionEditExecute(Sender: TObject);
 begin
- BaseActionElement(Edit);
+ BaseActionElement(EditElement);
 end;
 
 procedure TFormElementList.ActionEditUpdate(Sender: TObject);
@@ -132,19 +141,20 @@ end;
 procedure TFormElementList.InitFormElement(const fmElementSprav: TFormElement; const Action: TBaseActionElement);
 begin
      fmElementSprav.NameTableView := NameTableView; // Присвоили имя view из формы списка
-     if Action = Add then  //новый
+     if Action = AddElement then  //новый
             fmElementSprav.ID := -1;
-     if Action = Edit then   //редактируем существующий
+     if Action = EditElement then   //редактируем существующий
             fmElementSprav.ID := MemTableEh.FieldByName('id').AsLargeInt;
-     if Action = Copy then
+     if Action = CopyElement then
       begin //копируем существующий в новый меняя ID на -1
         fmElementSprav.ID := MemTableEh.FieldByName('id').AsLargeInt;
         fmElementSprav.IsCopied :=true; // FID  в родителе переключится в -1;
       end;
  end;
 
-procedure TFormElementList.DataInit;
+procedure TFormElementList.DataInit();
 begin
+  DBGridEh1.Visible := false;
   quList.Close;
   quList.SQL.Clear;
   quList.SQL.Add('Select * From dbo.' + NameTableView);
@@ -153,6 +163,7 @@ begin
   MemTableEh.LoadFromDataSet(quList, -1, lmCopy, false);
   MemTableEh.ReadOnly :=true;
   DataModuleSql.DefFields_TDBGridEh(NameTableView, DBGridEh1);
+  Delable := SetDelable;
   DBGridEh1.Visible := true;
   quList.Close;
 end;
@@ -175,6 +186,27 @@ begin
   end;
 end;
 
+procedure TFormElementList.DBGridEh1SortMarkingChanged(Sender: TObject);
+var
+  i:Integer;
+  s:String;
+begin
+  s := '';
+  for i := 0 to DBGridEh1.SortMarkedColumns.Count-1 do
+   if DBGridEh1.SortMarkedColumns[i].Title.SortMarker = smUpEh then
+    begin
+     s := s + DBGridEh1.SortMarkedColumns[i].FieldName + ' DESC, ';
+    end
+   else
+    begin
+     s := s + DBGridEh1.SortMarkedColumns[i].FieldName + ', ';
+    end;
+  if s <> '' then s := Copy(s,1,Length(s)-2); // Отсекаем последние ', '
+  MemTableEh.SortByFields(s);
+end;
+
+
+
 procedure TFormElementList.Delete;
 var
   idMsg : integer;
@@ -190,29 +222,32 @@ begin
     Case idMsg of
        IDYES :
         begin
-          if      NameTableView = v_Objects then
+          if      (NameTableView = v_Objects) and (not FindRelations(v_Objects, MemTableEh.FieldByName('ID').AsLargeInt))  then
           begin
               DataModuleSql.Del_Obj.Parameters.ParamByName('id').Value := MemTableEh.FieldByName('ID').AsLargeInt;
             if MemTableEh.FieldByName('IsDeleted').AsBoolean then
-              DataModuleSql.Del_Obj.Parameters.ParamByName('flag').Value := False
+              DataModuleSql.Del_Obj.Parameters.ParamByName('IsDeleted').Value := False
               else
-               DataModuleSql.Del_Obj.Parameters.ParamByName('flag').Value := True;
+               DataModuleSql.Del_Obj.Parameters.ParamByName('IsDeleted').Value := True;
             DataModuleSql.Del_Obj.ExecSQL;
+            RefreshElementList_ADL(NameTableView, MemTableEh.FieldByName('ID').AsLargeInt);
           end
-         else if NameTableView = v_Subjects then
+         else if (NameTableView = v_Subjects) and  (not FindRelations(v_Subjects, MemTableEh.FieldByName('ID').AsLargeInt)) then
           begin
             DataModuleSql.Del_Subj.Parameters.ParamByName('id').Value := MemTableEh.FieldByName('ID').AsLargeInt;
             if MemTableEh.FieldByName('IsDeleted').AsBoolean then
-              DataModuleSql.Del_Subj.Parameters.ParamByName('flag').Value := False
+              DataModuleSql.Del_Subj.Parameters.ParamByName('IsDeleted').Value := False
               else
-               DataModuleSql.Del_Subj.Parameters.ParamByName('flag').Value := True;
+               DataModuleSql.Del_Subj.Parameters.ParamByName('IsDeleted').Value := True;
             DataModuleSql.Del_Subj.ExecSQL;
+            RefreshElementList_ADL(NameTableView, MemTableEh.FieldByName('ID').AsLargeInt);
           end
          else
           begin
-
+           MessageBox(Handle, PChar('У элемента есть зависимости!'), PChar('Удаление'),
+                MB_OK + MB_ICONError);
           end;
-         RefreshElementList_ADL(NameTableView, MemTableEh.FieldByName('ID').AsLargeInt);
+
         end;
        IDNO :
         begin
@@ -221,10 +256,20 @@ begin
     End;
 end;
 
+function TFormElementList.SetDelable :Boolean;
+begin
+  if MemTableEh.FindField('IsDeleted') = nil then
+   begin
+     SetDelable := False;
+   end
+  else
+     SetDelable := True;
+end;
+
 procedure TFormElementList.Timer1Timer(Sender: TObject);
 begin
   Timer1.Enabled :=false;
-  DataInit();
+  DataInit;
 end;
 
 end.

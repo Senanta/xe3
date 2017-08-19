@@ -119,34 +119,46 @@ begin
 end;
 
 procedure TFormElement.cmdInsert;
-procedure GetId;
+procedure GetId_Into_FID_MemTableEh;
 begin
   FID := DataModuleSql.GetId;//SELECT @@IDENTITY AS [IDENTITY]
   MemTableEh.FieldByName('ID').ReadOnly :=false;
   MemTableEh.FieldByName('ID').AsLargeInt:=FID;
   MemTableEh.FieldByName('ID').ReadOnly :=true;
 end;
+procedure Update_fldCode(const tableName :String; const ID :LargeInt);
+begin
+      DataModuleSql.quUpdate_fldCode.SQL.Clear;
+      DataModuleSql.quUpdate_fldCode.SQL.Add('Update ' + tableName + ' Set Code=:Code Where id=:id');
+      DataModuleSql.quUpdate_fldCode.Parameters.ParamByName('Code').Value := ShortID(ID);
+      DataModuleSql.quUpdate_fldCode.Parameters.ParamByName('ID').Value := ID;
+      DataModuleSql.quUpdate_fldCode.ExecSQL;
+      MemTableEh.FieldByName('Code').AsString:=ShortID(ID);
+end;
 begin
     if      NameTableView = v_Objects then
     begin
       DataModuleSql.Ins_Obj.Parameters.ParamByName('Name').Value := MemTableEh.FieldByName('Name').AsString;
       DataModuleSql.Ins_Obj.ExecSQL;
-      GetId;
+      GetId_Into_FID_MemTableEh;
+      Update_fldCode('dbo.Objects', FID);
     end
    else if NameTableView = v_Subjects then
     begin
       DataModuleSql.Ins_Subj.Parameters.ParamByName('Name').Value := MemTableEh.FieldByName('Name').AsString;
       DataModuleSql.Ins_Subj.ExecSQL;
-      GetId;
+      GetId_Into_FID_MemTableEh;
       //Добавим основные склады
       DataModuleSql.Ins_Wh.Parameters.ParamByName('id_subj').Value := FID;
       DataModuleSql.Ins_Wh.Parameters.ParamByName('Name').Value := MemTableEh.FieldByName('Name').AsString+'/Основной склад';
       DataModuleSql.Ins_Wh.ExecSQL;
+      Update_fldCode('dbo.Warehouses', DataModuleSql.GetId);
       //Добавим основные договора
       DataModuleSql.Ins_Agr.Parameters.ParamByName('id_subj').Value := FID;
       DataModuleSql.Ins_Agr.Parameters.ParamByName('Name').Value := MemTableEh.FieldByName('Name').AsString+'/Основной договор';
       DataModuleSql.Ins_Agr.ExecSQL;
-
+      Update_fldCode('dbo.Agreements', DataModuleSql.GetId);
+      Update_fldCode('dbo.Subjects', FID); //TODO : Вернем ID dbo.Subjects в MemTableEh.FieldByName('Code').AsString Выполняем последним
     end
    else
     begin
@@ -161,12 +173,15 @@ begin
     begin
       DataModuleSql.Upd_Obj.Parameters.ParamByName('id').Value := FID;
       DataModuleSql.Upd_Obj.Parameters.ParamByName('Name').Value := MemTableEh.FieldByName('Name').AsString;
+      DataModuleSql.Upd_Obj.Parameters.ParamByName('Code').Value := MemTableEh.FieldByName('Code').AsString;
+
       DataModuleSql.Upd_Obj.ExecSQL;
     end
    else if NameTableView = v_Subjects then
     begin
       DataModuleSql.Upd_Subj.Parameters.ParamByName('id').Value := FID;
       DataModuleSql.Upd_Subj.Parameters.ParamByName('Name').Value := MemTableEh.FieldByName('Name').AsString;
+      DataModuleSql.Upd_Subj.Parameters.ParamByName('Code').Value := MemTableEh.FieldByName('Code').AsString;
       DataModuleSql.Upd_Subj.ExecSQL;
     end
    else
@@ -191,6 +206,14 @@ begin
      MemTableEh.Append;
      MemTableEh.Post;
     end;
+  if (IsCopied) and (FID =-1) then //Если добавлен копированием
+    begin
+      MemTableEh.Edit;
+      MemTableEh.FieldByName('ID').ReadOnly := false;
+      MemTableEh.FieldByName('ID').AsLargeInt :=FID;
+      MemTableEh.FieldByName('ID').ReadOnly := true;
+    end;
+
  quElement.Close;
  DataModuleSql.DefFields_TDBVertGridEh(NameTableView, DBVertGridEh1);
  PropertyPages.Visible := true;
@@ -208,12 +231,12 @@ begin
     if FID = -1 then //новый - будем делать Insert
       begin
        cmdInsert;
-       RefreshElementList_AUIL(NameTableView, MemTableEh, true);
+       RefreshElementList_AIL(NameTableView, MemTableEh);
       end
     else
       begin
        cmdUpdate;
-       RefreshElementList_AUIL(NameTableView, MemTableEh, false);
+       RefreshElementList_AUL(NameTableView, MemTableEh);
       end;
     DataModuleSql.ADOConnection1.CommitTrans;
     if MemTableEh.State = dsEdit then

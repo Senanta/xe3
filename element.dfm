@@ -3,7 +3,7 @@ object FormElement: TFormElement
   Top = 117
   Caption = 'MDI Element'
   ClientHeight = 314
-  ClientWidth = 322
+  ClientWidth = 333
   Color = clBtnFace
   ParentFont = True
   FormStyle = fsMDIChild
@@ -16,21 +16,23 @@ object FormElement: TFormElement
   object PanelTop: TPanel
     Left = 0
     Top = 0
-    Width = 322
+    Width = 333
     Height = 31
     Align = alTop
     BevelInner = bvLowered
     TabOrder = 0
+    ExplicitWidth = 322
   end
   object PanelMiddle: TPanel
     Left = 0
     Top = 31
-    Width = 322
+    Width = 333
     Height = 252
     Align = alClient
     BevelInner = bvLowered
     Caption = #1055#1086#1083#1091#1095#1077#1085#1080#1077' '#1076#1072#1085#1085#1099#1093'...'
     TabOrder = 1
+    ExplicitWidth = 322
     object PropertyPages: TPageControl
       Left = 8
       Top = 6
@@ -60,37 +62,41 @@ object FormElement: TFormElement
   object PanelBottom: TPanel
     Left = 0
     Top = 283
-    Width = 322
+    Width = 333
     Height = 31
     Align = alBottom
     BevelInner = bvLowered
     TabOrder = 2
+    ExplicitWidth = 322
     object btClose: TButton
-      Left = 245
+      Left = 256
       Top = 2
       Width = 75
       Height = 27
       Action = ActionClose
       Align = alRight
       TabOrder = 2
+      ExplicitLeft = 245
     end
     object btOK: TButton
-      Left = 95
+      Left = 106
       Top = 2
       Width = 75
       Height = 27
       Action = ActionOk
       Align = alRight
       TabOrder = 0
+      ExplicitLeft = 95
     end
     object btSave: TButton
-      Left = 170
+      Left = 181
       Top = 2
       Width = 75
       Height = 27
       Action = ActionSave
       Align = alRight
       TabOrder = 1
+      ExplicitLeft = 170
     end
   end
   object ActionList1: TActionList

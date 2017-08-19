@@ -12,6 +12,14 @@ const
     sntSpravCurrency = 'v_Currency';
     sntSpravVehicle = 'v_Vehicle';
 
+//“ипы документов
+type
+   TDocType = (dtRealization=1, dtReturnClient=2, dtIntake=3, dtReturnSupplier =4, dtPosting=5,
+                dtDiscarding=6, dtReceiptCash=7, dtExpenseCash=8, dtPaymentOrderIn=9,
+                dtPaymentOrderOut=10, dtCorrectionRealization=20, dtRelocation=30);
+
+
+
 type
   TDataModuleSql = class(TDataModule)
     ADOConnection1: TADOConnection;
@@ -32,6 +40,8 @@ type
     conLog: TADOConnection;
     Ins_Log: TADOQuery;
     ADOCommand1: TADOCommand;
+    quUpdate_fldCode: TADOQuery;
+    conImport: TADOConnection;
     procedure ADOConnection1ExecuteComplete(Connection: TADOConnection;
         RecordsAffected: Integer; const Error: Error; var EventStatus:
         TEventStatus; const Command: _Command; const Recordset: _Recordset);
@@ -41,10 +51,27 @@ type
     { Public declarations }
     procedure ExpositionFields(const NameTableView :string; const Query :TDataSet);
     procedure DefFields_TDBVertGridEh(const NameTableView :string; const DBVertGridEh :TDBVertGridEh);
-    procedure DefFields_TDBGridEh(const NameTableView :string; const DBGridEh :TDBGridEh);
+    /// <summary>TDataModuleSql.DefFields_TDBGridEh
+    /// свойства столбцов TDBGridEh берем из базы таблицу dbFields
+    /// </summary>
+    /// <param name="NameTableView"> (string) </param>
+    /// <param name="DBGridEh"> (TDBGridEh) </param>
+    /// <seealso cref="TDataModuleSql.DefFields_TDBVertGridEh"/>
+    procedure DefFields_TDBGridEh(const NameTableView :string; const DBGridEh
+        :TDBGridEh);
     function GetId :LargeInt;
     procedure ModifyDataSet(ADataSet: TDataSet);
   end;
+
+function FindRelations(const NameTableView: string; const ID: LargeInt): Boolean;
+function ShowTypeDoc( const curTDoc : TDocType) : string;
+
+/// <summary>
+/// ShortID(20000000045) вернет 2-45
+/// ShortID(21000000077) вернет 21-77
+/// –абота провер€лась в диапазоне 10000000000 - 99000000000
+/// </summary>
+function ShortID(ID :Currency): String;
 
 var
   DataModuleSql: TDataModuleSql;
@@ -56,6 +83,66 @@ implementation
 {$R *.dfm}
 
 { TDataModuleSql }
+function ShowTypeDoc( const curTDoc : TDocType) : string;
+begin
+ case curTDoc of
+    dtRealization: Result := '–еализаци€“оваров”слуг';
+    dtReturnClient: Result := '¬озврат“оваровќт лиента';
+    dtIntake: Result := 'ѕоступление“оваров”слуг';
+    dtReturnSupplier: Result := '¬озврат“оваровѕоставщику';
+    dtPosting: Result := 'ќприходование“оваров';
+    dtDiscarding: Result := '—писание“оваров';
+    dtReceiptCash: Result := 'ѕриходный ассовыйќрдер';
+    dtExpenseCash: Result := '–асходный ассовыйќрдер';
+    dtPaymentOrderIn: Result := 'ѕлатежноеѕоручение¬ход€щее';
+    dtPaymentOrderOut: Result := 'ѕлатежноеѕоручение»сход€щее';
+    dtCorrectionRealization: Result := ' орректировка–еализаций';
+    dtRelocation: Result := 'ѕеремещение“оваров';
+  end;
+end;
+function ShortID(ID :Currency): String;
+Var
+  sid :String;
+begin
+  sid :=FloatToStr(ID);
+    if POS('000000000', Copy(sid, 1, 10)) > 0 then
+      sid := '        ' + StringReplace(Copy(sid, 1, 10), '000000000', '-', [rfReplaceAll, rfIgnoreCase]) + Copy(sid, 11)
+          else if Pos('00000000', Copy(sid, 1, 9)) > 0 then
+            sid := '       ' + StringReplace(Copy(sid, 1, 9), '00000000', '-', [rfReplaceAll, rfIgnoreCase]) + Copy(sid, 10)
+              else if Pos('0000000', Copy(sid, 1, 8)) > 0 then
+                sid := '      ' + StringReplace(Copy(sid, 1, 8), '0000000', '-', [rfReplaceAll, rfIgnoreCase]) + Copy(sid, 9)
+                  else if Pos('000000', Copy(sid, 1, 7)) > 0 then
+                    sid := '     ' + StringReplace(Copy(sid, 1, 7), '000000', '-', [rfReplaceAll, rfIgnoreCase]) + Copy(sid, 8)
+                      else if Pos('00000', Copy(sid, 1, 6)) > 0 then
+                        sid := '    ' + StringReplace(Copy(sid, 1, 6), '00000', '-', [rfReplaceAll, rfIgnoreCase]) + Copy(sid, 7)
+                          else if Pos('0000', Copy(sid, 1, 5)) > 0 then
+                            sid := '   ' + StringReplace(Copy(sid, 1, 5), '0000', '-',[rfReplaceAll, rfIgnoreCase]) + Copy(sid, 6)
+                              else if Pos('000', Copy(sid, 1, 4)) > 0 then
+                                sid := '  ' + StringReplace(Copy(sid, 1, 4), '000', '-', [rfReplaceAll, rfIgnoreCase]) + Copy(sid, 5)
+                                  else if Pos('00', Copy(sid, 1, 3)) > 0 then
+                                    sid := ' ' + StringReplace(Copy(sid, 1, 3), '00', '-', [rfReplaceAll, rfIgnoreCase]) + Copy(sid, 4)
+                                      else if Pos('0', Copy(sid, 1, 2)) > 0 then
+                                        sid := '' + StringReplace(Copy(sid, 1, 2), '0', '-', [rfReplaceAll, rfIgnoreCase]) + Copy(sid, 3);
+    if POS('00000000', Copy(sid, 1, 10)) > 0 then
+      sid := '       ' + StringReplace(Copy(sid, 1, 10), '00000000', '-', [rfReplaceAll, rfIgnoreCase]) + Copy(sid, 11)
+          else if Pos('0000000', Copy(sid, 1, 9)) > 0 then
+            sid := '      ' + StringReplace(Copy(sid, 1, 9), '0000000', '-', [rfReplaceAll, rfIgnoreCase]) + Copy(sid, 10)
+              else if Pos('000000', Copy(sid, 1, 8)) > 0 then
+                sid := '     ' + StringReplace(Copy(sid, 1, 8), '000000', '-', [rfReplaceAll, rfIgnoreCase]) + Copy(sid, 9)
+                  else if Pos('00000', Copy(sid, 1, 7)) > 0 then
+                    sid := '    ' + StringReplace(Copy(sid, 1, 7), '00000', '-', [rfReplaceAll, rfIgnoreCase]) + Copy(sid, 8)
+                      else if Pos('0000', Copy(sid, 1, 6)) > 0 then
+                        sid := '   ' + StringReplace(Copy(sid, 1, 6), '0000', '-', [rfReplaceAll, rfIgnoreCase]) + Copy(sid, 7)
+                          else if Pos('000', Copy(sid, 1, 5)) > 0 then
+                            sid := '  ' + StringReplace(Copy(sid, 1, 5), '000', '-',[rfReplaceAll, rfIgnoreCase]) + Copy(sid, 6)
+                              else if Pos('00', Copy(sid, 1, 4)) > 0 then
+                                sid := ' ' + StringReplace(Copy(sid, 1, 4), '00', '-', [rfReplaceAll, rfIgnoreCase]) + Copy(sid, 5)
+                                  else if Pos('0', Copy(sid, 1, 3)) > 0 then
+                                    sid := '' + StringReplace(Copy(sid, 1, 3), '0', '-', [rfReplaceAll, rfIgnoreCase]) + Copy(sid, 4);
+
+  result :=sid;
+end;
+
 procedure AssignRecord(Source, Destination: TDataSet);
 var
   i: Integer;
@@ -89,6 +176,12 @@ begin
     DataSet.fields[i].Value := aField[i] ;
 end;
 
+function FindRelations(const NameTableView: string; const ID: LargeInt): Boolean;
+begin
+  // TODO -cMM: FindRelations default body inserted
+  Result := false;
+end;
+
 procedure TDataModuleSql.ADOConnection1ExecuteComplete(Connection:
     TADOConnection; RecordsAffected: Integer; const Error: Error; var
     EventStatus: TEventStatus; const Command: _Command; const Recordset:
@@ -105,16 +198,16 @@ begin
        s := s + ' :' + Command.Parameters[i].Name;
        s := s + '=' + VarToStr(Command.Parameters[i].Value);
       end;
-     if (Pos('Insert', s) > 0) or (Pos('Update', s) > 0) then
-      begin
+     if (Pos('INSERT', UpperCase(s)) > 0) or (Pos('UPDATE', UpperCase(s)) > 0) then  //ќстальные команды игнорируем,
+      begin                                                    // Delete не используем в клиенте
        Ins_Log.Parameters.ParamByName('CommandText').Value := s;
-       Ins_Log.ExecSQL;
+       Ins_Log.ExecSQL; //ипользуем другое TADOConnection conLog
       end;
    end;
 end;
 
-procedure TDataModuleSql.DefFields_TDBGridEh(const NameTableView: string;
-  const DBGridEh: TDBGridEh);
+procedure TDataModuleSql.DefFields_TDBGridEh(const NameTableView :string; const
+    DBGridEh :TDBGridEh);
 var
     i :integer;
 begin
@@ -131,10 +224,15 @@ begin
             begin
              if quTmp.FieldByName('DisplayWidth').AsInteger > 0 then
                 DBGridEh.Columns[i].Width := quTmp.FieldByName('DisplayWidth').AsInteger;
+             if quTmp.FieldByName('Filter').AsBoolean and not DBGridEh.STFilter.Visible then
+                DBGridEh.STFilter.Visible :=true; //¬ключим фильтр
+             DBGridEh.Columns[i].STFilter.Visible :=quTmp.FieldByName('Filter').AsBoolean;
+             DBGridEh.Columns[i].Title.TitleButton :=quTmp.FieldByName('Sort').AsBoolean; //—ортировка
              DBGridEh.Columns[i].EditMask := quTmp.FieldByName('EditMask').AsString;
              DBGridEh.Columns[i].Title.Caption := quTmp.FieldByName('DisplayLabel').AsString;
              DBGridEh.Columns[i].ReadOnly := quTmp.FieldByName('ReadOnly').AsBoolean;
              DBGridEh.Columns[i].Visible := quTmp.FieldByName('Visible').AsBoolean;
+
             end;
         end;
 end;

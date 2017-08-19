@@ -5,8 +5,11 @@ interface
 uses Winapi.Windows, System.SysUtils, System.Classes, System.Contnrs, System.UITypes,
   Vcl.Graphics, Vcl.Forms,  Vcl.Controls, Vcl.Menus, Vcl.StdCtrls, Vcl.Dialogs, Vcl.Buttons,
   Winapi.Messages, Vcl.ExtCtrls, Vcl.ComCtrls, Vcl.StdActns, Vcl.ActnList, Vcl.ToolWin,
-  Vcl.ImgList, System.Actions, ComObj, System.ImageList, Data.DB;
+  Vcl.ImgList, System.Actions, ComObj, System.ImageList, Data.DB, dbf, rxCalc;
 
+type
+  TCalc = class(TRxCalculator)
+end;
 
 type
   TMainForm = class(TForm)
@@ -77,6 +80,16 @@ type
     N10: TMenuItem;
     N11: TMenuItem;
     FileSaveAll: TAction;
+    N12: TMenuItem;
+    N13: TMenuItem;
+    actDictionary: TAction;
+    actImport: TAction;
+    N14: TMenuItem;
+    ToolButton12: TToolButton;
+    ToolButton13: TToolButton;
+    procedure FormCreate(Sender: TObject);
+    procedure actDictionaryExecute(Sender: TObject);
+    procedure actImportExecute(Sender: TObject);
     procedure FileNew1Execute(Sender: TObject);
     procedure FileOpen1Execute(Sender: TObject);
     procedure HelpAbout1Execute(Sender: TObject);
@@ -85,6 +98,7 @@ type
     procedure FileCloseAllUpdate(Sender: TObject);
     procedure ActionExecute(Sender: TObject);
     procedure Timer1Timer(Sender: TObject);
+    procedure ToolButton13Click(Sender: TObject);
   private
     { Private declarations }
   public
@@ -93,6 +107,8 @@ type
 
 var
   MainForm: TMainForm;
+  Calculator :TCalc;
+
 
 implementation
 {$R *.dfm}
@@ -107,10 +123,26 @@ implementation
 //    END
 //TADODataSet(qryReport).CommandTimeout := ADOConnection.CommandTimeout;
 
-uses data_module_sql, element_list, element_list_sprav, About;
+uses data_module_sql, element_list, element_list_sprav, About, dictionary, import_dbase_iii;
 
 var
   fmElementListSprav :TFormElementListSprav;
+
+procedure TMainForm.FormCreate(Sender: TObject);
+begin
+  Calculator := TCalc.Create(Self);
+  Calculator.Title := 'Калькулятор';
+ end;
+
+procedure TMainForm.actDictionaryExecute(Sender: TObject);
+begin
+  fmDictionary.ShowModal;
+end;
+
+procedure TMainForm.actImportExecute(Sender: TObject);
+begin
+  fmImport.ShowModal;
+end;
 
 procedure TMainForm.FileNew1Execute(Sender: TObject);
 begin
@@ -148,8 +180,14 @@ try
     readln(f, buf);
     DataModuleSql.AdoConnection1.ConnectionString :='FILE NAME='+fName;
     DataModuleSql.AdoConnection1.Connected :=true;
-    DataModuleSql.conLog.ConnectionString := DataModuleSql.AdoConnection1.ConnectionString;
+    DataModuleSql.conLog.ConnectionString :='FILE NAME='+fName;
     DataModuleSql.conLog.Connected :=true;
+    // Подключаемся к базе Initial Catalog=base_import должна быть на сервере!
+    DataModuleSql.conImport.ConnectionString :=DataModuleSql.AdoConnection1.ConnectionString;
+    DataModuleSql.conImport.ConnectionString := StringReplace(DataModuleSql.conImport.ConnectionString,
+       'Initial Catalog=base', 'Initial Catalog=base_import', [rfReplaceAll, rfIgnoreCase]);
+    DataModuleSql.conImport.Connected :=true;
+
     StatusBar.Panels[1].Text :='Подключение..Ок!';
    except
         on E :EInOutError do
@@ -225,5 +263,10 @@ procedure TMainForm.FileExit1Execute(Sender: TObject);
 begin
       Close;
 end;
+
+procedure TMainForm.ToolButton13Click(Sender: TObject);
+begin
+ Calculator.Execute;
+ end;
 
 end.
