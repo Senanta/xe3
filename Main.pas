@@ -87,6 +87,13 @@ type
     N14: TMenuItem;
     ToolButton12: TToolButton;
     ToolButton13: TToolButton;
+    actOSV: TAction;
+    actOSV_ACC: TAction;
+    actCardAcc: TAction;
+    N15: TMenuItem;
+    N16: TMenuItem;
+    N17: TMenuItem;
+    N18: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure actDictionaryExecute(Sender: TObject);
     procedure actImportExecute(Sender: TObject);
@@ -97,6 +104,7 @@ type
     procedure FileCloseAllExecute(Sender: TObject);
     procedure FileCloseAllUpdate(Sender: TObject);
     procedure ActionExecute(Sender: TObject);
+    procedure actOSVExecute(Sender: TObject);
     procedure Timer1Timer(Sender: TObject);
     procedure ToolButton13Click(Sender: TObject);
   private
@@ -123,7 +131,8 @@ implementation
 //    END
 //TADODataSet(qryReport).CommandTimeout := ADOConnection.CommandTimeout;
 
-uses data_module_sql, element_list, element_list_sprav, About, dictionary, import_dbase_iii;
+uses data_module_sql, element_list, element_list_sprav, About, dictionary, import_dbase_iii,
+  report_osv;
 
 var
   fmElementListSprav :TFormElementListSprav;
@@ -163,6 +172,11 @@ procedure TMainForm.ActionExecute(Sender: TObject);
 begin
    fmElementListSprav := TFormElementListSprav.Create(Application);
    fmElementListSprav.NameTableView := (Sender as TAction).Name; //Имя view из имени Action
+end;
+
+procedure TMainForm.actOSVExecute(Sender: TObject);
+begin
+   fmReport_Osv := TfmReport_Osv.Create(Application);
 end;
 
 procedure TMainForm.Timer1Timer(Sender: TObject);

@@ -89,7 +89,6 @@ object fmImport: TfmImport
     BevelInner = bvLowered
     Caption = #1042#1099#1087#1086#1083#1085#1077#1085#1080#1077'...'
     TabOrder = 1
-    ExplicitHeight = 307
     object DBGridEh1: TDBGridEh
       Left = 2
       Top = 2
@@ -124,7 +123,6 @@ object fmImport: TfmImport
     Align = alBottom
     BevelInner = bvLowered
     TabOrder = 2
-    ExplicitTop = 338
     object btOK: TButton
       Left = 584
       Top = 2
@@ -134,7 +132,6 @@ object fmImport: TfmImport
       Caption = #1048#1084#1087#1086#1088#1090
       TabOrder = 0
       OnClick = btOKClick
-      ExplicitLeft = 509
     end
     object btSave: TButton
       Left = 659
@@ -145,7 +142,6 @@ object fmImport: TfmImport
       Caption = #1047#1072#1082#1088#1099#1090#1100
       TabOrder = 1
       OnClick = btSaveClick
-      ExplicitLeft = 584
     end
     object ProgressBar1: TProgressBar
       Left = 8

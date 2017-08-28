@@ -196,6 +196,12 @@ begin
       Memo1.Lines.Add(s);
       quInsert.Parameters.CreateParameter(Dbf1.Fields[i].FieldName, ftSmallInt, pdInput, -1, 1);
      end
+     else if Dbf1.Fields[i].DataType = ftLargeInt then
+     begin
+      s :=Dbf1.Fields[i].FieldName + ' bigint null,';
+      Memo1.Lines.Add(s);
+      quInsert.Parameters.CreateParameter(Dbf1.Fields[i].FieldName, ftLargeInt, pdInput, -1, 1);
+     end
     else
      begin
       ShowMessage(' Ќеопределен тип данных дл€ генерации полей '+ShowTypeField(Dbf1.Fields[i].DataType));

@@ -87,6 +87,7 @@ var
 procedure TFormElementList.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
  Action := caFree;
+ ReportMemoryLeaksOnShutdown := True;
 end;
 
 procedure TFormElementList.ActionAddCopyExecute(Sender: TObject);

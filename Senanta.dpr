@@ -14,7 +14,8 @@ uses
   element_sprav_subj in 'element_sprav_subj.pas' {FormElementSpravSubj},
   refresh in 'refresh.pas',
   dictionary in 'dictionary.pas' {fmDictionary},
-  import_dbase_iii in 'import_dbase_iii.pas' {fmImport};
+  import_dbase_iii in 'import_dbase_iii.pas' {fmImport},
+  report_osv in 'report_osv.pas' {fmReport_Osv};
 
 {$R *.RES}
 

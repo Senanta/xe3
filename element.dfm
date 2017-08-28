@@ -43,6 +43,10 @@ object FormElement: TFormElement
       Visible = False
       object TabSheetGeneral: TTabSheet
         Caption = #1054#1073#1097#1080#1077
+        ExplicitLeft = 0
+        ExplicitTop = 0
+        ExplicitWidth = 0
+        ExplicitHeight = 0
         object DBVertGridEh1: TDBVertGridEh
           Left = 3
           Top = 3
