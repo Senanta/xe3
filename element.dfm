@@ -21,7 +21,6 @@ object FormElement: TFormElement
     Align = alTop
     BevelInner = bvLowered
     TabOrder = 0
-    ExplicitWidth = 322
   end
   object PanelMiddle: TPanel
     Left = 0
@@ -32,26 +31,29 @@ object FormElement: TFormElement
     BevelInner = bvLowered
     Caption = #1055#1086#1083#1091#1095#1077#1085#1080#1077' '#1076#1072#1085#1085#1099#1093'...'
     TabOrder = 1
-    ExplicitWidth = 322
     object PropertyPages: TPageControl
-      Left = 8
-      Top = 6
-      Width = 305
-      Height = 240
+      Left = 2
+      Top = 2
+      Width = 329
+      Height = 248
       ActivePage = TabSheetGeneral
+      Align = alClient
       TabOrder = 0
       Visible = False
+      ExplicitLeft = 8
+      ExplicitTop = 6
+      ExplicitWidth = 305
+      ExplicitHeight = 240
       object TabSheetGeneral: TTabSheet
         Caption = #1054#1073#1097#1080#1077
-        ExplicitLeft = 0
-        ExplicitTop = 0
-        ExplicitWidth = 0
-        ExplicitHeight = 0
+        ExplicitWidth = 297
+        ExplicitHeight = 212
         object DBVertGridEh1: TDBVertGridEh
-          Left = 3
-          Top = 3
-          Width = 231
-          Height = 174
+          Left = 0
+          Top = 0
+          Width = 321
+          Height = 220
+          Align = alClient
           AllowedSelections = []
           RowCategories.CategoryProps = <>
           PrintService.ColorSchema = pcsFullColorEh
@@ -71,7 +73,6 @@ object FormElement: TFormElement
     Align = alBottom
     BevelInner = bvLowered
     TabOrder = 2
-    ExplicitWidth = 322
     object btClose: TButton
       Left = 256
       Top = 2
@@ -80,7 +81,6 @@ object FormElement: TFormElement
       Action = ActionClose
       Align = alRight
       TabOrder = 2
-      ExplicitLeft = 245
     end
     object btOK: TButton
       Left = 106
@@ -90,7 +90,6 @@ object FormElement: TFormElement
       Action = ActionOk
       Align = alRight
       TabOrder = 0
-      ExplicitLeft = 95
     end
     object btSave: TButton
       Left = 181
@@ -100,7 +99,6 @@ object FormElement: TFormElement
       Action = ActionSave
       Align = alRight
       TabOrder = 1
-      ExplicitLeft = 170
     end
   end
   object ActionList1: TActionList
@@ -123,7 +121,7 @@ object FormElement: TFormElement
     end
   end
   object Timer1: TTimer
-    Interval = 500
+    Interval = 300
     OnTimer = Timer1Timer
     Left = 20
     Top = 141

@@ -35,7 +35,6 @@ object fmDictionary: TfmDictionary
     Align = alClient
     BevelInner = bvLowered
     TabOrder = 1
-    ExplicitHeight = 201
     object DBGridEh: TDBGridEh
       Left = 2
       Top = 2
@@ -95,6 +94,15 @@ object fmDictionary: TfmDictionary
           Footers = <>
           STFilter.Visible = False
           Width = 68
+        end
+        item
+          CellButtons = <>
+          DynProps = <>
+          EditButtons = <>
+          FieldName = 'DisplayFormat'
+          Footers = <>
+          STFilter.Visible = False
+          Width = 91
         end
         item
           CellButtons = <>
@@ -168,7 +176,6 @@ object fmDictionary: TfmDictionary
     Align = alBottom
     BevelInner = bvLowered
     TabOrder = 2
-    ExplicitTop = 232
     object btOK: TButton
       Left = 625
       Top = 2
@@ -178,7 +185,6 @@ object fmDictionary: TfmDictionary
       Caption = 'Ok'
       TabOrder = 0
       OnClick = btOKClick
-      ExplicitLeft = 475
     end
   end
   object ADOConnectionProviderEh: TADOConnectionProviderEh
@@ -206,6 +212,7 @@ object fmDictionary: TfmDictionary
       '  Category = :Category,'
       '  DisplayLabel = :DisplayLabel,'
       '  DisplayWidth = :DisplayWidth,'
+      'DisplayFormat =:DisplayFormat,'
       '  EditMask = :EditMask,'
       '  [Index] = :Index,'
       '  Readonly = :Readonly,'
@@ -256,6 +263,11 @@ object fmDictionary: TfmDictionary
         DataType = ftInteger
         Precision = 10
         Size = 4
+        Value = Null
+      end
+      item
+        Name = 'DisplayFormat'
+        Size = -1
         Value = Null
       end
       item
@@ -326,13 +338,13 @@ object fmDictionary: TfmDictionary
     InsertCommand.CommandText.Strings = (
       'insert into dbFields'
       
-        '  (TableName, FieldName, Category, DisplayLabel, DisplayWidth, E' +
-        'ditMask, '
+        '  (TableName, FieldName, Category, DisplayLabel, DisplayWidth, D' +
+        'isplayFormat, EditMask, '
       '   [Index], Readonly, Required, Visible, Filter, Sort)'
       'values'
       
         '  (:TableName, :FieldName, :Category, :DisplayLabel, :DisplayWid' +
-        'th, :EditMask, '
+        'th, :DisplayFormat,:EditMask, '
       '   :Index, :Readonly, :Required, :Visible, :Filter, :Sort)')
     InsertCommand.Parameters = <
       item
@@ -362,6 +374,11 @@ object fmDictionary: TfmDictionary
       item
         Name = 'DisplayWidth'
         DataType = ftInteger
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'DisplayFormat'
         Size = -1
         Value = Null
       end

@@ -94,6 +94,33 @@ type
     N16: TMenuItem;
     N17: TMenuItem;
     N18: TMenuItem;
+    N19: TMenuItem;
+    N20: TMenuItem;
+    N21: TMenuItem;
+    N22: TMenuItem;
+    N23: TMenuItem;
+    N24: TMenuItem;
+    N25: TMenuItem;
+    v_Headers_t1: TAction;
+    v_Headers_t2: TAction;
+    vHeaderst11: TMenuItem;
+    vHeaderst21: TMenuItem;
+    v_Headers_t3: TAction;
+    v_Headers_t4: TAction;
+    v_Headers_t5: TAction;
+    v_Headers_t6: TAction;
+    v_Headers_t7: TAction;
+    v_Headers_t8: TAction;
+    v_Headers_t9: TAction;
+    v_Headers_t10: TAction;
+    vHeaderst31: TMenuItem;
+    vHeaderst41: TMenuItem;
+    N26: TMenuItem;
+    N27: TMenuItem;
+    N28: TMenuItem;
+    N29: TMenuItem;
+    N30: TMenuItem;
+    N31: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure actDictionaryExecute(Sender: TObject);
     procedure actImportExecute(Sender: TObject);
@@ -107,6 +134,7 @@ type
     procedure actOSVExecute(Sender: TObject);
     procedure Timer1Timer(Sender: TObject);
     procedure ToolButton13Click(Sender: TObject);
+    procedure v_Headers_Execute(Sender: TObject);
   private
     { Private declarations }
   public
@@ -132,10 +160,11 @@ implementation
 //TADODataSet(qryReport).CommandTimeout := ADOConnection.CommandTimeout;
 
 uses data_module_sql, element_list, element_list_sprav, About, dictionary, import_dbase_iii,
-  report_osv;
+  report_osv, element_list_doc;
 
 var
   fmElementListSprav :TFormElementListSprav;
+  fmElementListDoc :TFormElementListDoc;
 
 procedure TMainForm.FormCreate(Sender: TObject);
 begin
@@ -282,5 +311,13 @@ procedure TMainForm.ToolButton13Click(Sender: TObject);
 begin
  Calculator.Execute;
  end;
+
+procedure TMainForm.v_Headers_Execute(Sender: TObject);
+begin
+   fmElementListDoc := TFormElementListDoc.Create(Application);
+   fmElementListDoc.NameTableView := v_Headers;
+   fmElementListDoc.doc_type := TDocType(StrToInt(StringReplace((Sender as TAction).Name, 'v_Headers_t', '', [rfReplaceAll, rfIgnoreCase])));
+end;
+
 
 end.

@@ -9,6 +9,8 @@ uses
 const
     v_Objects = 'v_Objects';
     v_Subjects = 'v_Subjects';
+    v_Headers = 'v_Headers';
+    v_Elements = 'v_Elements';
     sntSpravCurrency = 'v_Currency';
     sntSpravVehicle = 'v_Vehicle';
 
@@ -64,7 +66,7 @@ type
   end;
 
 function FindRelations(const NameTableView: string; const ID: LargeInt): Boolean;
-function ShowTypeDoc( const curTDoc : TDocType) : string;
+function TypeDocToStr( const curTDoc : TDocType) : string;
 
 /// <summary>
 /// ShortID(20000000045) вернет 2-45
@@ -83,7 +85,7 @@ implementation
 {$R *.dfm}
 
 { TDataModuleSql }
-function ShowTypeDoc( const curTDoc : TDocType) : string;
+function TypeDocToStr( const curTDoc : TDocType) : string;
 begin
  case curTDoc of
     dtRealization: Result := 'РеализацияТоваровУслуг';
@@ -100,6 +102,8 @@ begin
     dtRelocation: Result := 'ПеремещениеТоваров';
   end;
 end;
+
+
 function ShortID(ID :Currency): String;
 Var
   sid :String;
@@ -228,6 +232,7 @@ begin
                 DBGridEh.STFilter.Visible :=true; //Включим фильтр
              DBGridEh.Columns[i].STFilter.Visible :=quTmp.FieldByName('Filter').AsBoolean;
              DBGridEh.Columns[i].Title.TitleButton :=quTmp.FieldByName('Sort').AsBoolean; //Сортировка
+             DBGridEh.Columns[i].DisplayFormat := quTmp.FieldByName('DisplayFormat').AsString;
              DBGridEh.Columns[i].EditMask := quTmp.FieldByName('EditMask').AsString;
              DBGridEh.Columns[i].Title.Caption := quTmp.FieldByName('DisplayLabel').AsString;
              DBGridEh.Columns[i].ReadOnly := quTmp.FieldByName('ReadOnly').AsBoolean;
@@ -253,6 +258,7 @@ begin
             begin
              DBVertGridEh.Rows[i].CategoryName := quTmp.FieldByName('Category').AsString;
              DBVertGridEh.Rows[i].EditMask := quTmp.FieldByName('EditMask').AsString;
+             DBVertGridEh.Rows[i].DisplayFormat := quTmp.FieldByName('DisplayFormat').AsString;
              DBVertGridEh.Rows[i].RowLabel.Caption := quTmp.FieldByName('DisplayLabel').AsString;
              DBVertGridEh.Rows[i].ReadOnly := quTmp.FieldByName('ReadOnly').AsBoolean;
              DBVertGridEh.Rows[i].Visible := quTmp.FieldByName('Visible').AsBoolean;

@@ -190,6 +190,7 @@ object FormElementList: TFormElementList
     end
   end
   object Timer1: TTimer
+    Interval = 300
     OnTimer = Timer1Timer
     Left = 512
     Top = 32

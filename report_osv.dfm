@@ -11594,13 +11594,13 @@ object fmReport_Osv: TfmReport_Osv
     TabOrder = 0
     object Bevel1: TBevel
       Left = 217
-      Top = 11
+      Top = 9
       Width = 22
       Height = 8
       Shape = bsBottomLine
     end
     object DateEdit1: TDateEdit
-      Left = 123
+      Left = 124
       Top = 5
       Width = 90
       Height = 21
@@ -11670,6 +11670,7 @@ object fmReport_Osv: TfmReport_Osv
       DataSource = DataSource1
       DynProps = <>
       FooterRowCount = 1
+      FrozenCols = 1
       SumList.Active = True
       TabOrder = 0
       TitleParams.MultiTitle = True

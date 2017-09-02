@@ -64,26 +64,25 @@ type
     { Private declarations }
     FNameTableView :String; // Имя вьюва или таблицы для выбора
     FDelable :Boolean;
-    function SetDelable: Boolean;
   public
     property Delable: Boolean read FDelable write FDelable;
     property NameTableView         :string read FNameTableView write FNameTableView;
-    procedure DataInit;
+    procedure DataInit; virtual;
     procedure BaseActionElement(const Action: TBaseActionElement);
     procedure Delete;
-    procedure InitFormElement(const fmElementSprav: TFormElement; const Action: TBaseActionElement);
-
+    procedure InitFormElement(const fmElement: TFormElement; const Action: TBaseActionElement);
+    function SetDelable: Boolean;
   end;
 
 
 
 implementation
-uses data_module_sql, element_sprav_obj, element_sprav_subj, refresh;
+uses data_module_sql, element_sprav_obj, element_sprav_subj, refresh, element_doc;
 {$R *.dfm}
 var
  fmElementSpravObj :TFormElementSpravObj;
  fmElementSpravSubj :TFormElementSpravSubj;
-
+ fmElementDoc      :TFormElementDoc;
 procedure TFormElementList.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
  Action := caFree;
@@ -132,6 +131,12 @@ begin
        fmElementSpravSubj := TFormElementSpravSubj.Create(Application);
        InitFormElement(fmElementSpravSubj, Action);
     end
+   else if NameTableView = v_Headers then
+    begin
+       fmElementDoc := TFormElementDoc.Create(Application);
+       InitFormElement(fmElementDoc, Action);
+    end
+
    else
     begin
 
@@ -139,17 +144,17 @@ begin
 
 end;
 
-procedure TFormElementList.InitFormElement(const fmElementSprav: TFormElement; const Action: TBaseActionElement);
+procedure TFormElementList.InitFormElement(const fmElement: TFormElement; const Action: TBaseActionElement);
 begin
-     fmElementSprav.NameTableView := NameTableView; // Присвоили имя view из формы списка
+     fmElement.NameTableView := NameTableView; // Присвоили имя view из формы списка
      if Action = AddElement then  //новый
-            fmElementSprav.ID := -1;
+            fmElement.ID := -1;
      if Action = EditElement then   //редактируем существующий
-            fmElementSprav.ID := MemTableEh.FieldByName('id').AsLargeInt;
+            fmElement.ID := MemTableEh.FieldByName('id').AsLargeInt;
      if Action = CopyElement then
       begin //копируем существующий в новый меняя ID на -1
-        fmElementSprav.ID := MemTableEh.FieldByName('id').AsLargeInt;
-        fmElementSprav.IsCopied :=true; // FID  в родителе переключится в -1;
+        fmElement.ID := MemTableEh.FieldByName('id').AsLargeInt;
+        fmElement.IsCopied :=true; // FID  в родителе переключится в -1;
       end;
  end;
 
@@ -160,7 +165,6 @@ begin
   quList.SQL.Clear;
   quList.SQL.Add('Select * From dbo.' + NameTableView);
   quList.Open;
-  quList.Last;
   MemTableEh.LoadFromDataSet(quList, -1, lmCopy, false);
   MemTableEh.ReadOnly :=true;
   DataModuleSql.DefFields_TDBGridEh(NameTableView, DBGridEh1);
@@ -211,12 +215,13 @@ end;
 procedure TFormElementList.Delete;
 var
   idMsg : integer;
-  Msg   : string;
+  Msg, NameForDelete   : string;
 begin
+       NameForDelete := MemTableEh.FieldByName('Code').AsString + ' ' +MemTableEh.FieldByName('Name').AsString;
     if MemTableEh.FieldByName('IsDeleted').AsBoolean then
-      Msg := 'Отменить удаление элемента: ' + MemTableEh.FieldByName('Name').AsString + ' ?'
+      Msg := 'Отменить удаление элемента: ' + NameForDelete + ' ?'
     else
-      Msg := 'Удалить элемент: ' + MemTableEh.FieldByName('Name').AsString + ' ?';
+      Msg := 'Удалить элемент: ' + NameForDelete + ' ?';
 
     idMsg := MessageBox(Handle, PChar(Msg), PChar('Удаление'),
                 MB_YESNO + MB_ICONQUESTION + MB_DEFBUTTON2);
