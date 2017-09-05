@@ -5,6 +5,7 @@ inherited FormElementListDoc: TFormElementListDoc
   TextHeight = 13
   inherited panelTop: TPanel
     inherited ControlBar1: TControlBar
+      ExplicitWidth = 543
       inherited ToolBar2: TToolBar
         Width = 315
         ExplicitWidth = 315
@@ -21,6 +22,7 @@ inherited FormElementListDoc: TFormElementListDoc
           Top = 0
           Width = 90
           Height = 22
+          DialogTitle = #1042#1099#1073#1086#1088' '#1044#1072#1090#1099
           NumGlyphs = 2
           TabOrder = 0
           OnAcceptDate = DateEdit1AcceptDate
@@ -35,6 +37,13 @@ inherited FormElementListDoc: TFormElementListDoc
           OnAcceptDate = DateEdit2AcceptDate
         end
       end
+    end
+  end
+  inherited panelMiddle: TPanel
+    inherited DBGridEh1: TDBGridEh
+      IndicatorOptions = [gioShowRowIndicatorEh, gioShowRecNoEh]
+      IndicatorParams.RecNoShowStep = 10
+      OptionsEh = [dghFixed3D, dghHighlightFocus, dghClearSelection, dghAutoSortMarking, dghMultiSortMarking, dghDialogFind, dghShowRecNo, dghColumnResize, dghColumnMove, dghExtendVertLines]
     end
   end
   inherited panelBottom: TPanel

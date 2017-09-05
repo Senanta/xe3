@@ -11,6 +11,9 @@ const
     v_Subjects = 'v_Subjects';
     v_Headers = 'v_Headers';
     v_Elements = 'v_Elements';
+    v_Entries = 'v_Entries';
+    v_SetPrices = 'v_SetPrices';
+    v_SetPrice = 'v_SetPrice';
     sntSpravCurrency = 'v_Currency';
     sntSpravVehicle = 'v_Vehicle';
 
@@ -49,8 +52,10 @@ type
         TEventStatus; const Command: _Command; const Recordset: _Recordset);
   private
     { Private declarations }
+    FHeadquarters  :Int64;
   public
     { Public declarations }
+    property  Headquarters  :Int64 read FHeadquarters write FHeadquarters;
     procedure ExpositionFields(const NameTableView :string; const Query :TDataSet);
     procedure DefFields_TDBVertGridEh(const NameTableView :string; const DBVertGridEh :TDBVertGridEh);
     /// <summary>TDataModuleSql.DefFields_TDBGridEh
@@ -67,6 +72,7 @@ type
 
 function FindRelations(const NameTableView: string; const ID: LargeInt): Boolean;
 function TypeDocToStr( const curTDoc : TDocType) : string;
+function VarToInt(var AVariant: variant; DefaultValue: integer = 0): int64;
 
 /// <summary>
 /// ShortID(20000000045) вернет 2-45
@@ -85,6 +91,17 @@ implementation
 {$R *.dfm}
 
 { TDataModuleSql }
+function VarToInt(var AVariant: variant; DefaultValue: integer = 0): int64;
+begin
+  //*** ≈сли NULL или не числовое, то вернем значение по умолчанию
+  Result := DefaultValue;
+  if VarIsNull(AVariant) then
+    Result := 0
+  else
+//    {//*** ≈сли числовое, то вернем значение} if VarIsOrdinal(AVariant) then
+      Result := StrToInt(VarToStr(AVariant));
+end;
+
 function TypeDocToStr( const curTDoc : TDocType) : string;
 begin
  case curTDoc of

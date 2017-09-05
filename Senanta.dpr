@@ -12,10 +12,12 @@ uses
   element_list_sprav in 'element_list_sprav.pas' {FormElementListSprav},
   data_module_sql in 'data_module_sql.pas' {DataModuleSql: TDataModule},
   element_sprav_subj in 'element_sprav_subj.pas' {FormElementSpravSubj},
+  set_prices in 'set_prices.pas' {FormElementListSetPrices},
   refresh in 'refresh.pas',
   dictionary in 'dictionary.pas' {fmDictionary},
   import_dbase_iii in 'import_dbase_iii.pas' {fmImport},
-  report_osv in 'report_osv.pas' {fmReport_Osv};
+  report_osv in 'report_osv.pas' {fmReport_Osv},
+  set_price in 'set_price.pas' {fmSetPrice};
 
 {$R *.RES}
 

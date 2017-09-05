@@ -128,17 +128,21 @@
             <Form>FormElementSpravSubj</Form>
             <FormType>dfm</FormType>
         </DCCReference>
+        <DCCReference Include="set_prices.pas">
+            <Form>FormElementListSetPrices</Form>
+        </DCCReference>
         <DCCReference Include="refresh.pas"/>
         <DCCReference Include="dictionary.pas">
             <Form>fmDictionary</Form>
-            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="import_dbase_iii.pas">
             <Form>fmImport</Form>
-            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="report_osv.pas">
             <Form>fmReport_Osv</Form>
+        </DCCReference>
+        <DCCReference Include="set_price.pas">
+            <Form>fmSetPrice</Form>
             <FormType>dfm</FormType>
         </DCCReference>
         <BuildConfiguration Include="Debug">
@@ -590,13 +594,13 @@
                         <Operation>1</Operation>
                     </Platform>
                 </DeployClass>
-                <ProjectRoot Platform="iOSSimulator" Name="$(PROJECTNAME).app"/>
+                <ProjectRoot Platform="iOSDevice32" Name="$(PROJECTNAME).app"/>
                 <ProjectRoot Platform="Android" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="Win32" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="iOSDevice64" Name="$(PROJECTNAME).app"/>
                 <ProjectRoot Platform="OSX32" Name="$(PROJECTNAME).app"/>
+                <ProjectRoot Platform="iOSSimulator" Name="$(PROJECTNAME).app"/>
                 <ProjectRoot Platform="Win64" Name="$(PROJECTNAME)"/>
-                <ProjectRoot Platform="iOSDevice32" Name="$(PROJECTNAME).app"/>
             </Deployment>
         </BorlandProject>
         <ProjectFileVersion>12</ProjectFileVersion>

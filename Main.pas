@@ -121,6 +121,11 @@ type
     N29: TMenuItem;
     N30: TMenuItem;
     N31: TMenuItem;
+    v_SetPrices: TAction;
+    v_PriceTypes: TAction;
+    N32: TMenuItem;
+    N33: TMenuItem;
+    N34: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure actDictionaryExecute(Sender: TObject);
     procedure actImportExecute(Sender: TObject);
@@ -135,6 +140,7 @@ type
     procedure Timer1Timer(Sender: TObject);
     procedure ToolButton13Click(Sender: TObject);
     procedure v_Headers_Execute(Sender: TObject);
+    procedure v_SetPricesExecute(Sender: TObject);
   private
     { Private declarations }
   public
@@ -160,12 +166,12 @@ implementation
 //TADODataSet(qryReport).CommandTimeout := ADOConnection.CommandTimeout;
 
 uses data_module_sql, element_list, element_list_sprav, About, dictionary, import_dbase_iii,
-  report_osv, element_list_doc;
+  report_osv, element_list_doc, set_prices;
 
 var
   fmElementListSprav :TFormElementListSprav;
   fmElementListDoc :TFormElementListDoc;
-
+  fmElementListSetPrices :TFormElementListSetPrices;
 procedure TMainForm.FormCreate(Sender: TObject);
 begin
   Calculator := TCalc.Create(Self);
@@ -230,6 +236,12 @@ try
     DataModuleSql.conImport.ConnectionString := StringReplace(DataModuleSql.conImport.ConnectionString,
        'Initial Catalog=base', 'Initial Catalog=base_import', [rfReplaceAll, rfIgnoreCase]);
     DataModuleSql.conImport.Connected :=true;
+    DataModuleSql.quTmp.Close;
+    DataModuleSql.quTmp.SQL.Clear;
+    DataModuleSql.quTmp.Sql.Add('Select Headquarters From dbo.dbProperties');
+    DataModuleSql.quTmp.Open;
+    DataModuleSql.Headquarters :=DataModuleSql.quTmp.Fields[0].AsLargeInt;
+    DataModuleSql.quTmp.Close;
 
     StatusBar.Panels[1].Text :='Подключение..Ок!';
    except
@@ -319,5 +331,11 @@ begin
    fmElementListDoc.doc_type := TDocType(StrToInt(StringReplace((Sender as TAction).Name, 'v_Headers_t', '', [rfReplaceAll, rfIgnoreCase])));
 end;
 
+
+procedure TMainForm.v_SetPricesExecute(Sender: TObject);
+begin
+   fmElementListSetPrices := TFormElementListSetPrices.Create(Application);
+   fmElementListSetPrices.NameTableView := (Sender as TAction).Name;
+end;
 
 end.

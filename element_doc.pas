@@ -19,7 +19,15 @@ type
     MemTableEhRowSet: TMemTableEh;
     DataSource2: TDataSource;
     spl1: TSplitter;
+    RowPages: TPageControl;
+    TabSheetRows: TTabSheet;
+    TabSheetEntriesF1: TTabSheet;
+    TabSheetEntriesF2: TTabSheet;
     DBGridEhRowSet: TDBGridEh;
+    quEntries: TADOQuery;
+    MemTableEhEntries: TMemTableEh;
+    DataSource3: TDataSource;
+    DBGridEhEntries: TDBGridEh;
   private
     { Private declarations }
   public
@@ -34,6 +42,8 @@ uses data_module_sql;
 { TFormElementDoc }
 
 procedure TFormElementDoc.DataInit;
+var
+  i :Integer;
 begin
   inherited;
  quRowSet.Close;
@@ -42,7 +52,27 @@ begin
  MemTableEhRowSet.LoadFromDataSet(quRowSet, -1, lmCopy, false);
  quRowSet.Close;
  DataModuleSql.DefFields_TDBGridEh(v_Elements, DBGridEhRowSet);
+     for i := 0 to DBGridEhRowSet.Columns.Count - 1 do
+        begin
+         if DBGridEhRowSet.Columns[i].FieldName = 'summa' then
+          begin
+           DBGridEhRowSet.Columns[i].Footer.DisplayFormat :=',#0.00';
+           DBGridEhRowSet.Columns[i].Footer.ValueType :=fvtSum;
+          end;
+         if DBGridEhRowSet.Columns[i].FieldName = 'amount' then
+          begin
+           DBGridEhRowSet.Columns[i].Footer.DisplayFormat :=',#0.00';
+           DBGridEhRowSet.Columns[i].Footer.ValueType :=fvtSum;
+          end;
 
+        end;
+ quEntries.Close;
+ quEntries.Parameters.ParamByName('ID_head').Value := ID;
+ quEntries.Open;
+ MemTableEhEntries.LoadFromDataSet(quEntries, -1, lmCopy, false);
+ quEntries.Close;
+ DataModuleSql.DefFields_TDBGridEh(v_Entries, DBGridEhEntries);
+ RowPages.Visible :=true;
 end;
 
 end.

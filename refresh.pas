@@ -2,7 +2,7 @@ unit refresh;
 
 interface
 uses
-  System.SysUtils, System.Classes, Vcl.Dialogs, Data.DB, Data.Win.ADODB,
+  System.SysUtils, System.Classes, Vcl.Dialogs, Data.DB, Data.Win.ADODB,System.Variants,
   //--------------------------------------------------------------------------------------
   main, element_list;
 
@@ -10,9 +10,30 @@ uses
  procedure RefreshElementList_AIL(const NameTableView: string; const DataSet :TDataSet);
  procedure RefreshElementList_AUL(const NameTableView :string; const DataSet :TDataSet);
  procedure RefreshElementList_ADL(const NameTableView: string;  const ID :Largeint);
-
+ procedure RefreshSetPricesFromServer(const NameTableView: string; const Data: string; const id_type: Int64);
 implementation
 
+procedure RefreshSetPricesFromServer(const NameTableView: string; const Data: string; const id_type: Int64);
+Var
+  i:Integer;
+begin
+  i := MainForm.MDIChildCount - 1;
+ while i >= 0 do
+   begin
+    if MainForm.MDIChildren[i] is TFormElementList then
+     begin
+         if TFormElementList(MainForm.MDIChildren[i]).NameTableView = NameTableView then
+          begin
+               TFormElementList(MainForm.MDIChildren[i]).MemTableEh.DisableControls; //Внимательней на LargeInt
+               TFormElementList(MainForm.MDIChildren[i]).DataInit;
+               TFormElementList(MainForm.MDIChildren[i]).MemTableEh.Locate('data;id_type', VarArrayOf([Data, id_type]), [loPartialKey]);
+               TFormElementList(MainForm.MDIChildren[i]).MemTableEh.EnableControls;
+          end;
+
+     end;
+    i := i - 1;
+   end;
+end;
 procedure AssignRecord(Source, Destination: TDataSet);
   var
     i: Integer;
@@ -49,7 +70,7 @@ i := MainForm.MDIChildCount - 1;
                   try
                       AssignRecord(DataSet, TFormElementList(MainForm.MDIChildren[i]).MemTableEh);
                       MainForm.StatusBar.Panels[1].Text :=DateTimeToStr(Now()) + ' Успешно добавлен ' + NameTableView + ': ' + DataSet.FieldByName('Name').AsString;
-                  except
+                   except
                     on E :EDatabaseError do
                       begin
                        ShowMessage(E.ClassName+' : Попытка AssignRecord выполнения завершилась неудачно '+E.Message);

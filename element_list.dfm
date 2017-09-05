@@ -126,6 +126,7 @@ object FormElementList: TFormElementList
       STFilter.Location = stflInTitleFilterEh
       TabOrder = 0
       Visible = False
+      OnDblClick = DBGridEh1DblClick
       OnDrawColumnCell = DBGridEh1DrawColumnCell
       OnSortMarkingChanged = DBGridEh1SortMarkingChanged
       object RowDetailData: TRowDetailPanelControlEh

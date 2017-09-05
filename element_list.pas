@@ -14,7 +14,7 @@ uses
 
 type
   TBaseActionElement = (AddElement, CopyElement, EditElement);
-
+function NameTableViewToStr( const NameTableView : String) : string;
  ///<summary>
  ///  Форма для отображения списка элементов
  ///  </summary>
@@ -60,12 +60,15 @@ type
     procedure DBGridEh1DrawColumnCell(Sender: TObject; const Rect: TRect; DataCol:
         Integer; Column: TColumnEh; State: TGridDrawState);
     procedure DBGridEh1SortMarkingChanged(Sender: TObject);
+    procedure DBGridEh1DblClick(Sender: TObject);
   private
     { Private declarations }
     FNameTableView :String; // Имя вьюва или таблицы для выбора
     FDelable :Boolean;
+    FDestination :TForm;//Если не nil - указывает на форму которой нужно вернуть значение
   public
     property Delable: Boolean read FDelable write FDelable;
+    property Destination :TForm read FDestination write FDestination;
     property NameTableView         :string read FNameTableView write FNameTableView;
     procedure DataInit; virtual;
     procedure BaseActionElement(const Action: TBaseActionElement);
@@ -77,16 +80,34 @@ type
 
 
 implementation
-uses data_module_sql, element_sprav_obj, element_sprav_subj, refresh, element_doc;
+uses data_module_sql, element_sprav_obj, element_sprav_subj, refresh, element_doc, set_price;
 {$R *.dfm}
 var
  fmElementSpravObj :TFormElementSpravObj;
  fmElementSpravSubj :TFormElementSpravSubj;
  fmElementDoc      :TFormElementDoc;
+ fmSetPrice :TfmSetPrice;
+
+ function NameTableViewToStr( const NameTableView : String) : string;
+begin
+ if NameTableView = v_Objects then
+  begin
+     Result := 'Номенклатура';
+  end
+ else if NameTableView = v_Subjects then
+  begin
+     Result := 'Контрагенты';
+  end
+ else if NameTableView = v_SetPrices then
+  begin
+     Result := 'Установки цен номенклатуры';
+  end;
+ end;
+
 procedure TFormElementList.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
- Action := caFree;
- ReportMemoryLeaksOnShutdown := True;
+  Action := caFree;
+// ReportMemoryLeaksOnShutdown := True;
 end;
 
 procedure TFormElementList.ActionAddCopyExecute(Sender: TObject);
@@ -136,6 +157,26 @@ begin
        fmElementDoc := TFormElementDoc.Create(Application);
        InitFormElement(fmElementDoc, Action);
     end
+    else if NameTableView = v_SetPrices then
+    begin
+       fmSetPrice := TfmSetPrice.Create(Application);
+       fmSetPrice.NameTableView := NameTableView;
+       fmSetPrice.Data := MemTableEh.FieldByName('data').AsDateTime;
+       fmSetPrice.PriceName := MemTableEh.FieldByName('name').AsString;
+            if Action = AddElement then  //новый
+              begin
+                fmSetPrice.ID := -1;
+                fmSetPrice.Data := Now;
+              end;
+     if Action = EditElement then   //редактируем существующий
+            fmSetPrice.ID := MemTableEh.FieldByName('id_type').AsLargeInt;
+     if Action = CopyElement then
+      begin
+        fmSetPrice.ID := MemTableEh.FieldByName('id_type').AsLargeInt;
+       // fmSetPrice.IsCopied :=true;
+      end;
+
+    end
 
    else
     begin
@@ -163,14 +204,37 @@ begin
   DBGridEh1.Visible := false;
   quList.Close;
   quList.SQL.Clear;
-  quList.SQL.Add('Select * From dbo.' + NameTableView);
+  if NameTableView = v_SetPrices then
+   begin
+      quList.SQL.Add('Select * From dbo.' + NameTableView + ' Order by data_real');
+   end
+  else
+    quList.SQL.Add('Select * From dbo.' + NameTableView);
   quList.Open;
   MemTableEh.LoadFromDataSet(quList, -1, lmCopy, false);
   MemTableEh.ReadOnly :=true;
   DataModuleSql.DefFields_TDBGridEh(NameTableView, DBGridEh1);
   Delable := SetDelable;
+      if Owner is TfmSetPrice then
+       begin
+        MemTableEh.Locate('id', (Owner as TfmSetPrice).MemTableEh.FieldByName('id_obj').AsLargeInt, [loCaseInsensitive]);
+       end;
+  Caption := NameTableViewToStr(NameTableView);
   DBGridEh1.Visible := true;
   quList.Close;
+end;
+
+procedure TFormElementList.DBGridEh1DblClick(Sender: TObject);
+begin
+      if Owner is TfmSetPrice then
+       begin
+        if (Owner as TfmSetPrice).MemTableEh.State <> dsEdit then
+        (Owner as TfmSetPrice).MemTableEh.Edit;
+        (Owner as TfmSetPrice).MemTableEh.FieldByName('id_obj').AsLargeInt :=MemTableEh.FieldByName('id').AsLargeInt;
+        (Owner as TfmSetPrice).MemTableEh.FieldByName('code').AsString :=MemTableEh.FieldByName('code').AsString;
+        (Owner as TfmSetPrice).MemTableEh.FieldByName('name').AsString :=MemTableEh.FieldByName('name').AsString;
+        Close;
+       end;
 end;
 
 procedure TFormElementList.DBGridEh1DrawColumnCell(Sender: TObject; const Rect:
