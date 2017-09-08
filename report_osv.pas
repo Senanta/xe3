@@ -7,24 +7,27 @@ uses
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.Mask, RxToolEdit, Vcl.Buttons,
   Vcl.ExtCtrls, DateUtils, DBGridEhGrouping, ToolCtrlsEh, DBGridEhToolCtrls, DynVarsEh,
   MemTableDataEh, Data.DB, MemTableEh, Data.Win.ADODB, comObj, EhLibVCL, GridsEh, DBAxisGridsEh,
-  DBGridEh;
+  DBGridEh, DBCtrlsEh;
 
 type
   TfmReport_Osv = class(TForm)
     panelTop: TPanel;
     panelMiddle: TPanel;
     panelBottom: TPanel;
-    DateEdit1: TDateEdit;
-    DateEdit2: TDateEdit;
-    BitBtn1: TBitBtn;
-    Bevel1: TBevel;
     DBGridEh1: TDBGridEh;
     quSaldo: TADOQuery;
     MemTableEh: TMemTableEh;
     DataSource1: TDataSource;
-    procedure BitBtn1Click(Sender: TObject);
+    lblBetween: TLabel;
+    DateEdit1: TDBDateTimeEditEh;
+    bvl1: TBevel;
+    DateEdit2: TDBDateTimeEditEh;
+    Timer1: TTimer;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
-    procedure FormShow(Sender: TObject);
+    procedure DBGridEh1DblClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+    procedure Timer1Timer(Sender: TObject);
+    procedure DateEdit1Change(Sender: TObject);
   private
     { Private declarations }
   public
@@ -36,14 +39,10 @@ var
   fmReport_Osv: TfmReport_Osv;
 
 implementation
-
+uses report_osv_acc;
 {$R *.dfm}
-
-procedure TfmReport_Osv.BitBtn1Click(Sender: TObject);
-begin
- DataInit;
-end;
-
+var
+fmReportOsv_Acc :TfmReportOsv_Acc;
 procedure TfmReport_Osv.DataInit;
 begin
   DBGridEh1.Visible := false;
@@ -52,13 +51,13 @@ begin
   MemTableEh.ReadOnly :=false;
   quSaldo.Close;
   //Обороты Дебет Кредит
-  quSaldo.Parameters.ParamByName('d1').Value := DateEdit1.Date;
-  quSaldo.Parameters.ParamByName('d2').Value := DateEdit2.Date;
-  quSaldo.Parameters.ParamByName('d3').Value := DateEdit1.Date;
-  quSaldo.Parameters.ParamByName('d4').Value := DateEdit2.Date;
+  quSaldo.Parameters.ParamByName('d1').Value := DateEdit1.Value;
+  quSaldo.Parameters.ParamByName('d2').Value := DateEdit2.Value;
+  quSaldo.Parameters.ParamByName('d3').Value := DateEdit1.Value;
+  quSaldo.Parameters.ParamByName('d4').Value := DateEdit2.Value;
   //Остаток на первую дату
-  quSaldo.Parameters.ParamByName('d5').Value := DateEdit1.Date;
-  quSaldo.Parameters.ParamByName('d6').Value := DateEdit1.Date;
+  quSaldo.Parameters.ParamByName('d5').Value := DateEdit1.Value;
+  quSaldo.Parameters.ParamByName('d6').Value := DateEdit1.Value;
  try
         try
         quSaldo.Open;
@@ -75,6 +74,7 @@ begin
   finally
     Screen.Cursor:=crDefault;
  end;
+  Application.ProcessMessages;
   MemTableEh.LoadFromDataSet(quSaldo, -1, lmCopy, false);
 
   while not MemTableEh.Eof do
@@ -99,9 +99,19 @@ begin
   MemTableEh.First;
   MemTableEh.ReadOnly :=true;
   DBGridEh1.Visible := true;
-  Caption := 'Оборотно-сальдовая ведомость(' + DateToStr(DateEdit1.Date) + '-' + DateToStr(DateEdit2.Date)+')';
+  Caption := 'Оборотно-сальдовая ведомость(' + DateToStr(DateEdit1.Value) + '-' + DateToStr(DateEdit2.Value)+')';
 
   quSaldo.Close;
+end;
+
+procedure TfmReport_Osv.DateEdit1Change(Sender: TObject);
+begin
+  DataInit;
+end;
+
+procedure TfmReport_Osv.DBGridEh1DblClick(Sender: TObject);
+begin
+    fmReportOsv_Acc := TfmReportOsv_Acc.Create(Self);
 end;
 
 procedure TfmReport_Osv.FormClose(Sender: TObject; var Action: TCloseAction);
@@ -109,10 +119,20 @@ begin
   Action := caFree;
 end;
 
-procedure TfmReport_Osv.FormShow(Sender: TObject);
+procedure TfmReport_Osv.FormCreate(Sender: TObject);
 begin
-  DateEdit1.Date:=StartOfTheMonth(Now);
-  DateEdit2.Date:=EndOfTheMonth(Now);
+  DateEdit1.OnChange := nil;
+  DateEdit2.OnChange := nil;
+  DateEdit1.Value:=StartOfTheMonth(Now);
+  DateEdit2.Value:=EndOfTheMonth(Now);
+  DateEdit1.OnChange := DateEdit1Change;
+  DateEdit2.OnChange := DateEdit1Change;
+end;
+
+procedure TfmReport_Osv.Timer1Timer(Sender: TObject);
+begin
+   Timer1.Enabled :=false;
+   DataInit;
 end;
 
 end.

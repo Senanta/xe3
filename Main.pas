@@ -141,6 +141,7 @@ type
     procedure ToolButton13Click(Sender: TObject);
     procedure v_Headers_Execute(Sender: TObject);
     procedure v_SetPricesExecute(Sender: TObject);
+    procedure actOSV_ACCExecute(Sender: TObject);
   private
     { Private declarations }
   public
@@ -166,12 +167,13 @@ implementation
 //TADODataSet(qryReport).CommandTimeout := ADOConnection.CommandTimeout;
 
 uses data_module_sql, element_list, element_list_sprav, About, dictionary, import_dbase_iii,
-  report_osv, element_list_doc, set_prices;
+  report_osv, element_list_doc, set_prices,report_osv_acc;
 
 var
   fmElementListSprav :TFormElementListSprav;
   fmElementListDoc :TFormElementListDoc;
   fmElementListSetPrices :TFormElementListSetPrices;
+  fmReportOsv_Acc :TfmReportOsv_Acc;
 procedure TMainForm.FormCreate(Sender: TObject);
 begin
   Calculator := TCalc.Create(Self);
@@ -212,6 +214,11 @@ end;
 procedure TMainForm.actOSVExecute(Sender: TObject);
 begin
    fmReport_Osv := TfmReport_Osv.Create(Application);
+end;
+
+procedure TMainForm.actOSV_ACCExecute(Sender: TObject);
+begin
+  fmReportOsv_Acc := TfmReportOsv_Acc.Create(Application);
 end;
 
 procedure TMainForm.Timer1Timer(Sender: TObject);

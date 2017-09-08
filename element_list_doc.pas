@@ -9,19 +9,16 @@ uses
   Vcl.ActnList, Vcl.Menus, Vcl.ComCtrls, Vcl.ToolWin, Vcl.ExtCtrls, DBGridEhGrouping,
   ToolCtrlsEh, DBGridEhToolCtrls, DynVarsEh, MemTableDataEh, Data.DB, MemTableEh,
   Data.Win.ADODB, EhLibVCL, GridsEh, DBAxisGridsEh, DBGridEh,
-  data_module_sql, Vcl.StdCtrls, Vcl.Mask, RxToolEdit, ComObj;
+  data_module_sql, Vcl.StdCtrls, Vcl.Mask, RxToolEdit, ComObj, DBCtrlsEh;
 
 type
   TFormElementListDoc = class(TFormElementList)
     ToolButton8: TToolButton;
-    DateEdit1: TDateEdit;
-    DateEdit2: TDateEdit;
     lbTime: TLabel;
+    DateEdit1: TDBDateTimeEditEh;
+    DateEdit2: TDBDateTimeEditEh;
     procedure FormCreate(Sender: TObject);
-    procedure DateEdit1AcceptDate(Sender: TObject; var ADate: TDateTime;
-      var Action: Boolean);
-    procedure DateEdit2AcceptDate(Sender: TObject; var ADate: TDateTime;
-      var Action: Boolean);
+    procedure DateEdit1Change(Sender: TObject);
   private
     { Private declarations }
    Fdoc_type :TDocType;
@@ -100,29 +97,25 @@ begin
 
  end;
 
-procedure TFormElementListDoc.DateEdit1AcceptDate(Sender: TObject; var ADate: TDateTime;
-  var Action: Boolean);
+procedure TFormElementListDoc.DateEdit1Change(Sender: TObject);
 begin
-  Action:=True;
-  Fd1 :=ADate;
-  DataInit;
-end;
-
-procedure TFormElementListDoc.DateEdit2AcceptDate(Sender: TObject; var ADate: TDateTime;
-  var Action: Boolean);
-begin
-  Action:=True;
-  Fd2 :=ADate;
+  inherited;
+  Fd1 :=DateEdit1.Value;
+  Fd2 := DateEdit2.Value;
   DataInit;
 end;
 
 procedure TFormElementListDoc.FormCreate(Sender: TObject);
 begin
   inherited;
-  DateEdit1.Date:=StartOfTheMonth(Now);
-  DateEdit2.Date:=EndOfTheMonth(Now);
-  Fd1 := DateEdit1.Date;
-  Fd2 := DateEdit2.Date;
+  DateEdit1.OnChange :=nil;
+  DateEdit2.OnChange :=nil;
+  DateEdit1.Value:=StartOfTheMonth(Now);
+  DateEdit2.Value:=EndOfTheMonth(Now);
+  Fd1 := DateEdit1.Value;
+  Fd2 := DateEdit2.Value;
+  DateEdit1.OnChange :=DateEdit1Change;
+  DateEdit2.OnChange :=DateEdit1Change;
 end;
 
 end.

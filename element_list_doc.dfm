@@ -5,10 +5,9 @@ inherited FormElementListDoc: TFormElementListDoc
   TextHeight = 13
   inherited panelTop: TPanel
     inherited ControlBar1: TControlBar
-      ExplicitWidth = 543
       inherited ToolBar2: TToolBar
-        Width = 315
-        ExplicitWidth = 315
+        Width = 411
+        ExplicitWidth = 411
         object ToolButton8: TToolButton
           Left = 92
           Top = 0
@@ -17,24 +16,29 @@ inherited FormElementListDoc: TFormElementListDoc
           ImageIndex = 29
           Style = tbsSeparator
         end
-        object DateEdit1: TDateEdit
+        object DateEdit1: TDBDateTimeEditEh
           Left = 100
           Top = 0
-          Width = 90
+          Width = 121
           Height = 22
-          DialogTitle = #1042#1099#1073#1086#1088' '#1044#1072#1090#1099
-          NumGlyphs = 2
+          DynProps = <>
+          EditButtons = <>
+          Kind = dtkDateEh
           TabOrder = 0
-          OnAcceptDate = DateEdit1AcceptDate
+          Visible = True
+          OnChange = DateEdit1Change
         end
-        object DateEdit2: TDateEdit
-          Left = 190
+        object DateEdit2: TDBDateTimeEditEh
+          Left = 221
           Top = 0
-          Width = 90
+          Width = 121
           Height = 22
-          NumGlyphs = 2
+          DynProps = <>
+          EditButtons = <>
+          Kind = dtkDateEh
           TabOrder = 1
-          OnAcceptDate = DateEdit2AcceptDate
+          Visible = True
+          OnChange = DateEdit1Change
         end
       end
     end

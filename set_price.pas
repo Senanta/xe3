@@ -8,7 +8,7 @@ uses
   Vcl.ActnList, Vcl.ExtCtrls, MemTableDataEh, Data.DB, DBGridEhGrouping, ToolCtrlsEh,
   DBGridEhToolCtrls, DynVarsEh, EhLibVCL, GridsEh, DBAxisGridsEh, DBGridEh, ComObj,
   Data.Win.ADODB, MemTableEh, DateUtils, RxToolEdit, RxDBCtrl, RxDBComb, RxLookup, RxCtrls,
-  EhLibMTE;
+  EhLibMTE, DBLookupEh;
 
 type
   TfmSetPrice = class(TForm)
@@ -28,13 +28,13 @@ type
     MemTableEh: TMemTableEh;
     quPrices: TADOQuery;
     DBGridEh1: TDBGridEh;
-    DateEdit1: TDateEdit;
     quPriceTypes: TADOQuery;
     DataSource2: TDataSource;
-    RxDBLookupCombo1: TRxDBLookupCombo;
     Label2: TLabel;
     quDel: TADOQuery;
     quIns: TADOQuery;
+    DateEdit1: TDBDateTimeEditEh;
+    DBLookupComboboxEh1: TDBLookupComboboxEh;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure SetIsChange(const Value: Boolean);
     procedure SetNameElement(const Value: String);
@@ -44,13 +44,11 @@ type
     procedure ActionSaveUpdate(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure Timer1Timer(Sender: TObject);
-    procedure DateEdit1AcceptDate(Sender: TObject; var ADate: TDateTime;
-      var Action: Boolean);
-    procedure RxDBLookupCombo1Change(Sender: TObject);
     procedure DBGridEh1Columns1EditButtonClick(Sender: TObject; var Handled: Boolean);
     procedure MemTableEhAfterEdit(DataSet: TDataSet);
     procedure DateEdit1Change(Sender: TObject);
     procedure MemTableEhAfterInsert(DataSet: TDataSet);
+    procedure DBLookupComboboxEh1Change(Sender: TObject);
 
   private
     FID         :Int64;
@@ -148,16 +146,6 @@ end;
 
 procedure TfmSetPrice.MemTableEhAfterInsert(DataSet: TDataSet);
 begin
-   IsChange :=true;
-end;
-
-procedure TfmSetPrice.RxDBLookupCombo1Change(Sender: TObject);
-Var
-  vkey :Variant;
-begin
-   vkey := RxDBLookupCombo1.KeyValue;
-   FID := StrToInt64(VarToStr(vkey));
-   Name := 'Установка цен' + ': ' + ' ' + RxDBLookupCombo1.DisplayValue + ' на Дату ' + DateToStr(FData);
    IsChange :=true;
 end;
 
@@ -273,22 +261,17 @@ begin
  quPrices.Close;
  quPriceTypes.Close;
  quPriceTypes.Open;
- RxDBLookupCombo1.KeyValue:=FID;
- DateEdit1.Date :=FData;
+ DBLookupComboboxEh1.KeyValue:=FID;
+ DateEdit1.Value :=FData;
  IsChange :=false;
  DataModuleSql.DefFields_TDBGridEh(v_SetPrice, DBGridEh1);
   DBGridEh1.Visible:=true;
 end;
-procedure TfmSetPrice.DateEdit1AcceptDate(Sender: TObject; var ADate: TDateTime;
-  var Action: Boolean);
-begin
-  FData :=ADate;
-  Name := 'Установка цен' + ': ' + ' ' + FPriceName + ' на Дату ' + DateToStr(FData);
-end;
-
 procedure TfmSetPrice.DateEdit1Change(Sender: TObject);
 begin
    IsChange :=true;
+   FData :=DateEdit1.Value;
+   Name := 'Установка цен' + ': ' + ' ' + FPriceName + ' на Дату ' + DateToStr(FData);
 end;
 
 procedure TfmSetPrice.DBGridEh1Columns1EditButtonClick(Sender: TObject;
@@ -296,6 +279,17 @@ procedure TfmSetPrice.DBGridEh1Columns1EditButtonClick(Sender: TObject;
 begin
    fmElementListSprav := TFormElementListSprav.Create(Self);
    fmElementListSprav.NameTableView := v_Objects;
+end;
+
+procedure TfmSetPrice.DBLookupComboboxEh1Change(Sender: TObject);
+Var
+  vkey :Variant;
+begin
+   vkey := DBLookupComboboxEh1.KeyValue;
+   FID := StrToInt64(VarToStr(vkey));
+   Name := 'Установка цен' + ': ' + ' ' + DBLookupComboboxEh1.Text + ' на Дату ' + DateToStr(FData);
+   IsChange :=true;
+
 end;
 
 end.

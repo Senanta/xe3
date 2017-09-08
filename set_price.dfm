@@ -2,7 +2,7 @@ object fmSetPrice: TfmSetPrice
   Left = 0
   Top = 0
   Caption = 'fmSetPrice'
-  ClientHeight = 250
+  ClientHeight = 271
   ClientWidth = 595
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -550,14 +550,13 @@ object fmSetPrice: TfmSetPrice
   TextHeight = 13
   object PanelBottom: TPanel
     Left = 0
-    Top = 219
+    Top = 240
     Width = 595
     Height = 31
     Align = alBottom
     BevelInner = bvLowered
     TabOrder = 0
-    ExplicitLeft = -193
-    ExplicitWidth = 788
+    ExplicitTop = 219
     object btClose: TButton
       Left = 518
       Top = 2
@@ -566,7 +565,6 @@ object fmSetPrice: TfmSetPrice
       Action = ActionClose
       Align = alRight
       TabOrder = 2
-      ExplicitLeft = 711
     end
     object btOK: TButton
       Left = 368
@@ -576,7 +574,6 @@ object fmSetPrice: TfmSetPrice
       Action = ActionOk
       Align = alRight
       TabOrder = 0
-      ExplicitLeft = 561
     end
     object btSave: TButton
       Left = 443
@@ -586,7 +583,6 @@ object fmSetPrice: TfmSetPrice
       Action = ActionSave
       Align = alRight
       TabOrder = 1
-      ExplicitLeft = 636
     end
   end
   object PanelTop: TPanel
@@ -597,8 +593,6 @@ object fmSetPrice: TfmSetPrice
     Align = alTop
     BevelInner = bvLowered
     TabOrder = 1
-    ExplicitLeft = -193
-    ExplicitWidth = 788
     object Label1: TLabel
       Left = 136
       Top = 8
@@ -613,49 +607,49 @@ object fmSetPrice: TfmSetPrice
       Height = 13
       Caption = #1044#1072#1090#1072':'
     end
-    object DateEdit1: TDateEdit
-      Left = 43
-      Top = 6
-      Width = 87
+    object DateEdit1: TDBDateTimeEditEh
+      Left = 44
+      Top = 5
+      Width = 86
       Height = 21
-      NumGlyphs = 2
+      DynProps = <>
+      EditButtons = <>
+      Kind = dtkDateEh
       TabOrder = 0
-      OnAcceptDate = DateEdit1AcceptDate
+      Visible = True
       OnChange = DateEdit1Change
     end
-    object RxDBLookupCombo1: TRxDBLookupCombo
+    object DBLookupComboboxEh1: TDBLookupComboboxEh
       Left = 193
       Top = 5
-      Width = 145
+      Width = 161
       Height = 21
-      DropDownCount = 8
-      EmptyValue = '-1'
-      IndexSwitch = False
-      LookupField = 'id'
-      LookupDisplay = 'name'
-      LookupSource = DataSource2
+      DynProps = <>
+      DataField = ''
+      EditButtons = <>
+      KeyField = 'id'
+      ListField = 'Name'
+      ListSource = DataSource2
       TabOrder = 1
-      OnChange = RxDBLookupCombo1Change
+      Visible = True
+      OnChange = DBLookupComboboxEh1Change
     end
   end
   object PanelMiddle: TPanel
     Left = 0
     Top = 31
     Width = 595
-    Height = 188
+    Height = 209
     Align = alClient
     BevelInner = bvLowered
     Caption = #1055#1086#1083#1091#1095#1077#1085#1080#1077' '#1076#1072#1085#1085#1099#1093
     TabOrder = 2
-    ExplicitLeft = 168
-    ExplicitTop = 72
-    ExplicitWidth = 185
-    ExplicitHeight = 41
+    ExplicitHeight = 188
     object DBGridEh1: TDBGridEh
       Left = 2
       Top = 2
       Width = 591
-      Height = 184
+      Height = 205
       Align = alClient
       ColumnDefValues.Title.TitleButton = True
       DataSource = DataSource1

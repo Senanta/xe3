@@ -8,7 +8,7 @@ uses
   Vcl.ComCtrls, Vcl.ToolWin, Vcl.ExtCtrls, Vcl.Buttons, DBGridEhGrouping,
   ToolCtrlsEh, DBGridEhToolCtrls, DynVarsEh, EhLibVCL, GridsEh, DBAxisGridsEh, DBGridEh,
   Vcl.StdCtrls, Data.DB, Data.Win.ADODB, MemTableDataEh, MemTableEh, System.ImageList,
-  Vcl.ImgList, EhLibMTE,
+  Vcl.ImgList, EhLibMTE,System.UITypes,
   //--------------------------------------------------------------------------------------
   element;
 
@@ -61,6 +61,8 @@ function NameTableViewToStr( const NameTableView : String) : string;
         Integer; Column: TColumnEh; State: TGridDrawState);
     procedure DBGridEh1SortMarkingChanged(Sender: TObject);
     procedure DBGridEh1DblClick(Sender: TObject);
+    procedure DBGridEh1DrawDataCell(Sender: TObject; const Rect: TRect; Field: TField;
+      State: TGridDrawState);
   private
     { Private declarations }
     FNameTableView :String; // Имя вьюва или таблицы для выбора
@@ -253,6 +255,27 @@ begin
        ActionList1.Images.Draw(TDBGridEh(Sender).Canvas,Rect.Left+1,Rect.Top+1, 30);
      end;
   end;
+end;
+
+procedure TFormElementList.DBGridEh1DrawDataCell(Sender: TObject; const Rect: TRect;
+  Field: TField; State: TGridDrawState);
+begin
+  // If the record's CustNo is 4711 draw the entire row with a
+  // line through it. (set the font style to strike out)
+  if (Sender as TDBGridEh).DataSource.DataSet.FieldByName('IsDeleted').AsBoolean = true then
+    with (Sender as TDBGridEh).Canvas do
+    begin
+      FillRect(Rect);
+      // Set the font style to StrikeOut
+      Font.Style := Font.Style + [fsStrikeOut];
+      Font.Color := clMaroon;
+      // Draw the cell right aligned for floats + offset
+      if (Field.DataType = ftFloat) then
+        TextOut(Rect.Right-TextWidth(Field.AsString)-3, Rect.Top+3, Field.AsString)
+      // Otherwise draw the cell left aligned + offset
+      else
+        TextOut(Rect.Left+2,Rect.Top+3,Field.AsString);
+    end;
 end;
 
 procedure TFormElementList.DBGridEh1SortMarkingChanged(Sender: TObject);

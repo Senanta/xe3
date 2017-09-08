@@ -128,6 +128,7 @@ object FormElementList: TFormElementList
       Visible = False
       OnDblClick = DBGridEh1DblClick
       OnDrawColumnCell = DBGridEh1DrawColumnCell
+      OnDrawDataCell = DBGridEh1DrawDataCell
       OnSortMarkingChanged = DBGridEh1SortMarkingChanged
       object RowDetailData: TRowDetailPanelControlEh
       end
