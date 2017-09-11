@@ -126,6 +126,15 @@ type
     N32: TMenuItem;
     N33: TMenuItem;
     N34: TMenuItem;
+    v_Headers_t20: TAction;
+    N35: TMenuItem;
+    v_Headers_t30: TAction;
+    N36: TMenuItem;
+    v_Headers_t51: TAction;
+    v_Headers_t61: TAction;
+    N37: TMenuItem;
+    N38: TMenuItem;
+    N39: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure actDictionaryExecute(Sender: TObject);
     procedure actImportExecute(Sender: TObject);

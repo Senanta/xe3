@@ -119,6 +119,7 @@ object FormElementList: TFormElementList
       DynProps = <>
       HorzScrollBar.ExtraPanel.NavigatorButtons = [nbFirstEh, nbPriorEh, nbNextEh, nbLastEh]
       HorzScrollBar.ExtraPanel.Visible = True
+      EmptyDataInfo.Active = True
       OptionsEh = [dghFixed3D, dghHighlightFocus, dghClearSelection, dghAutoSortMarking, dghMultiSortMarking, dghDialogFind, dghColumnResize, dghColumnMove, dghExtendVertLines]
       SearchPanel.Enabled = True
       SearchPanel.Location = splHorzScrollBarExtraPanelEh

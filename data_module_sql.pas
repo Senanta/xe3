@@ -21,7 +21,8 @@ const
 type
    TDocType = (dtRealization=1, dtReturnClient=2, dtIntake=3, dtReturnSupplier =4, dtPosting=5,
                 dtDiscarding=6, dtReceiptCash=7, dtExpenseCash=8, dtPaymentOrderIn=9,
-                dtPaymentOrderOut=10, dtCorrectionRealization=20, dtRelocation=30);
+                dtPaymentOrderOut=10, dtCorrectionRealization=20, dtRelocation=30,
+                dtPostingResort=51, dtDiscardingResort=61);
 
 
 
@@ -107,6 +108,8 @@ begin
     dtPaymentOrderOut: Result := 'ПлатежноеПоручениеИсходящее';
     dtCorrectionRealization: Result := 'КорректировкаРеализаций';
     dtRelocation: Result := 'ПеремещениеТоваров';
+    dtPostingResort: Result := 'ОприходованиеТоваровПересортица';
+    dtDiscardingResort: Result := 'СписаниеТоваровПересортица';
   end;
 end;
 

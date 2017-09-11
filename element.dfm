@@ -40,14 +40,8 @@ object FormElement: TFormElement
       Align = alClient
       TabOrder = 0
       Visible = False
-      ExplicitLeft = 8
-      ExplicitTop = 6
-      ExplicitWidth = 305
-      ExplicitHeight = 240
       object TabSheetGeneral: TTabSheet
         Caption = #1054#1073#1097#1080#1077
-        ExplicitWidth = 297
-        ExplicitHeight = 212
         object DBVertGridEh1: TDBVertGridEh
           Left = 0
           Top = 0

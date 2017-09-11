@@ -198,7 +198,7 @@ begin
  quElement.Parameters.ParamByName('ID').Value := FID;
  quElement.Open;
  if IsCopied then FID :=-1; //Если был запрос на копирование
- Name := NameTableView + ': ' + quElement.FieldByName('Code').AsString + ' ' + quElement.FieldByName('Name').AsString;
+ Name := quElement.FieldByName('Code').AsString + ' ' + quElement.FieldByName('Name').AsString;
 
  MemTableEh.LoadFromDataSet(quElement, -1, lmCopy, false);
  if (not IsCopied) and (FID =-1) then //Если новый и не добавлен копированием
