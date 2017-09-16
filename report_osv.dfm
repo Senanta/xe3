@@ -51,6 +51,7 @@ object fmReport_Osv: TfmReport_Osv
   OldCreateOrder = False
   Position = poDefault
   Visible = True
+  OnActivate = FormActivate
   OnClose = FormClose
   OnCreate = FormCreate
   PixelsPerInch = 96
@@ -120,11 +121,12 @@ object fmReport_Osv: TfmReport_Osv
       DynProps = <>
       FooterRowCount = 1
       FrozenCols = 1
+      EmptyDataInfo.Active = True
+      PopupMenu = pm1
       SumList.Active = True
       TabOrder = 0
       TitleParams.MultiTitle = True
       Visible = False
-      OnDblClick = DBGridEh1DblClick
       Columns = <
         item
           CellButtons = <>
@@ -220,6 +222,14 @@ object fmReport_Osv: TfmReport_Osv
     Align = alBottom
     BevelInner = bvLowered
     TabOrder = 2
+    object lbTime: TLabel
+      Left = 8
+      Top = 6
+      Width = 30
+      Height = 13
+      Caption = 'lbTime'
+      Visible = False
+    end
   end
   object quSaldo: TADOQuery
     CacheSize = 1024
@@ -392,5 +402,14 @@ object fmReport_Osv: TfmReport_Osv
     OnTimer = Timer1Timer
     Left = 20
     Top = 141
+  end
+  object pm1: TPopupMenu
+    OnPopup = pm1Popup
+    Left = 216
+    Top = 150
+    object N1: TMenuItem
+      Caption = #1054#1073#1086#1088#1086#1090#1085#1086'-'#1089#1072#1083#1100#1076#1086#1074#1072#1103' '#1087#1086' '#1089#1095#1077#1090#1091'...'
+      OnClick = N1Click
+    end
   end
 end

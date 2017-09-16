@@ -51,6 +51,7 @@ object fmReportOsv_Acc: TfmReportOsv_Acc
   OldCreateOrder = False
   Position = poDefault
   Visible = True
+  OnActivate = FormActivate
   OnClose = FormClose
   OnCreate = FormCreate
   PixelsPerInch = 96
@@ -145,9 +146,18 @@ object fmReportOsv_Acc: TfmReportOsv_Acc
       FrozenCols = 2
       HorzScrollBar.ExtraPanel.NavigatorButtons = [nbFirstEh, nbPriorEh, nbNextEh, nbLastEh]
       HorzScrollBar.ExtraPanel.Visible = True
+      EmptyDataInfo.Active = True
+      Options = [dgEditing, dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgConfirmDelete, dgCancelOnExit, dgMultiSelect]
+      OptionsEh = [dghFixed3D, dghHighlightFocus, dghClearSelection, dghAutoSortMarking, dghMultiSortMarking, dghDialogFind, dghColumnResize, dghColumnMove, dghExtendVertLines]
+      PopupMenu = pm1
+      STFilter.InstantApply = True
+      STFilter.Local = True
+      STFilter.Location = stflInTitleFilterEh
+      STFilter.Visible = True
       SumList.Active = True
       TabOrder = 0
       Visible = False
+      OnSortMarkingChanged = DBGridEh1SortMarkingChanged
       Columns = <
         item
           CellButtons = <>
@@ -172,6 +182,7 @@ object fmReportOsv_Acc: TfmReportOsv_Acc
           FieldName = 'amount_dt'
           Footer.ValueType = fvtSum
           Footers = <>
+          STFilter.Visible = False
           Title.Caption = #1082#1086#1083'-'#1074#1086#1044#1090
           Width = 61
         end
@@ -182,6 +193,7 @@ object fmReportOsv_Acc: TfmReportOsv_Acc
           FieldName = 'summa_dt'
           Footer.ValueType = fvtSum
           Footers = <>
+          STFilter.Visible = False
           Title.Caption = #1057#1091#1084#1084#1072#1044#1090
           Width = 95
         end
@@ -192,6 +204,7 @@ object fmReportOsv_Acc: TfmReportOsv_Acc
           FieldName = 'amount_kt'
           Footer.ValueType = fvtSum
           Footers = <>
+          STFilter.Visible = False
           Title.Caption = #1082#1086#1083'-'#1074#1086#1050#1090
           Width = 61
         end
@@ -202,6 +215,7 @@ object fmReportOsv_Acc: TfmReportOsv_Acc
           FieldName = 'summa_kt'
           Footer.ValueType = fvtSum
           Footers = <>
+          STFilter.Visible = False
           Title.Caption = #1057#1091#1084#1084#1072#1050#1090
           Width = 95
         end
@@ -220,6 +234,7 @@ object fmReportOsv_Acc: TfmReportOsv_Acc
           FieldName = 'name_doc'
           Footers = <>
           Title.Caption = #1058#1080#1087' '#1076#1086#1082#1091#1084#1077#1085#1090#1072
+          Title.TitleButton = True
           Width = 85
         end
         item
@@ -228,6 +243,7 @@ object fmReportOsv_Acc: TfmReportOsv_Acc
           EditButtons = <>
           FieldName = 'Code_Doc'
           Footers = <>
+          STFilter.Visible = False
           Title.Caption = #1053#1086#1084#1077#1088' '#1076#1086#1082'.'
           Width = 63
         end
@@ -237,6 +253,7 @@ object fmReportOsv_Acc: TfmReportOsv_Acc
           EditButtons = <>
           FieldName = 'Code_Obj'
           Footers = <>
+          STFilter.Visible = False
           Title.Caption = #1050#1086#1076
           Width = 72
         end
@@ -255,6 +272,7 @@ object fmReportOsv_Acc: TfmReportOsv_Acc
           EditButtons = <>
           FieldName = 'amount'
           Footers = <>
+          STFilter.Visible = False
           Title.Caption = #1082#1086#1083'-'#1074#1086
           Width = 55
         end
@@ -264,6 +282,7 @@ object fmReportOsv_Acc: TfmReportOsv_Acc
           EditButtons = <>
           FieldName = 'price'
           Footers = <>
+          STFilter.Visible = False
           Title.Caption = #1062#1077#1085#1072
           Width = 60
         end
@@ -273,6 +292,7 @@ object fmReportOsv_Acc: TfmReportOsv_Acc
           EditButtons = <>
           FieldName = 'price_uchet'
           Footers = <>
+          STFilter.Visible = False
           Title.Caption = #1062#1077#1085#1072' '#1091#1095#1077#1090'.'
           Width = 64
         end
@@ -292,6 +312,7 @@ object fmReportOsv_Acc: TfmReportOsv_Acc
           FieldName = 'Subj_To'
           Footers = <>
           Title.Caption = #1050#1086#1084#1091
+          Title.TitleButton = True
           Width = 98
         end
         item
@@ -369,6 +390,14 @@ object fmReportOsv_Acc: TfmReportOsv_Acc
     Align = alBottom
     BevelInner = bvLowered
     TabOrder = 2
+    object lbTime: TLabel
+      Left = 8
+      Top = 6
+      Width = 30
+      Height = 13
+      Caption = 'lbTime'
+      Visible = False
+    end
   end
   object quSaldo: TADOQuery
     CacheSize = 1024
@@ -583,5 +612,13 @@ object fmReportOsv_Acc: TfmReportOsv_Acc
     OnTimer = Timer1Timer
     Left = 20
     Top = 141
+  end
+  object pm1: TPopupMenu
+    Left = 224
+    Top = 158
+    object N1: TMenuItem
+      Caption = #1069#1082#1089#1087#1086#1088#1090' '#1074' Excel'
+      OnClick = N1Click
+    end
   end
 end

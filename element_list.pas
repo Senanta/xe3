@@ -63,14 +63,16 @@ function NameTableViewToStr( const NameTableView : String) : string;
     procedure DBGridEh1DblClick(Sender: TObject);
     procedure DBGridEh1DrawDataCell(Sender: TObject; const Rect: TRect; Field: TField;
       State: TGridDrawState);
+    procedure FormCreate(Sender: TObject);
+    procedure FormActivate(Sender: TObject);
   private
     { Private declarations }
     FNameTableView :String; // Имя вьюва или таблицы для выбора
     FDelable :Boolean;
-    FDestination :TForm;//Если не nil - указывает на форму которой нужно вернуть значение
+    FTabSheet :TTabSheet; //Закладка на bottom_panel
   public
     property Delable: Boolean read FDelable write FDelable;
-    property Destination :TForm read FDestination write FDestination;
+    property TabSheet: TTabSheet read FTabSheet write FTabSheet;
     property NameTableView         :string read FNameTableView write FNameTableView;
     procedure DataInit; virtual;
     procedure BaseActionElement(const Action: TBaseActionElement);
@@ -82,7 +84,8 @@ function NameTableViewToStr( const NameTableView : String) : string;
 
 
 implementation
-uses data_module_sql, element_sprav_obj, element_sprav_subj, refresh, element_doc, set_price;
+uses data_module_sql, element_sprav_obj, element_sprav_subj, refresh, element_doc, set_price,
+  bottom_panel;
 {$R *.dfm}
 var
  fmElementSpravObj :TFormElementSpravObj;
@@ -102,14 +105,24 @@ begin
   end
  else if NameTableView = v_SetPrices then
   begin
-     Result := 'Установки цен номенклатуры';
+     Result := 'Установки цен';
   end;
  end;
+
+procedure TFormElementList.FormActivate(Sender: TObject);
+begin
+ ActivateTab(FTabSheet);
+end;
 
 procedure TFormElementList.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
   Action := caFree;
 // ReportMemoryLeaksOnShutdown := True;
+end;
+
+procedure TFormElementList.FormCreate(Sender: TObject);
+begin
+  FTabSheet :=AddTab(Self);
 end;
 
 procedure TFormElementList.ActionAddCopyExecute(Sender: TObject);
@@ -163,20 +176,23 @@ begin
     begin
        fmSetPrice := TfmSetPrice.Create(Application);
        fmSetPrice.NameTableView := NameTableView;
-       fmSetPrice.Data := MemTableEh.FieldByName('data').AsDateTime;
-       fmSetPrice.PriceName := MemTableEh.FieldByName('name').AsString;
             if Action = AddElement then  //новый
               begin
                 fmSetPrice.ID := -1;
                 fmSetPrice.Data := Now;
               end;
-     if Action = EditElement then   //редактируем существующий
-            fmSetPrice.ID := MemTableEh.FieldByName('id_type').AsLargeInt;
-     if Action = CopyElement then
-      begin
-        fmSetPrice.ID := MemTableEh.FieldByName('id_type').AsLargeInt;
-       // fmSetPrice.IsCopied :=true;
-      end;
+            if Action = EditElement then   //редактируем существующий
+             begin
+              fmSetPrice.ID := MemTableEh.FieldByName('id_type').AsLargeInt;
+              fmSetPrice.Data := MemTableEh.FieldByName('data').AsDateTime;
+              fmSetPrice.PriceName := MemTableEh.FieldByName('name').AsString;
+             end;
+           if Action = CopyElement then
+            begin
+              fmSetPrice.ID := MemTableEh.FieldByName('id_type').AsLargeInt;
+              fmSetPrice.Data := MemTableEh.FieldByName('data').AsDateTime;
+              fmSetPrice.PriceName := MemTableEh.FieldByName('name').AsString;
+            end;
 
     end
 
@@ -222,6 +238,7 @@ begin
         MemTableEh.Locate('id', (Owner as TfmSetPrice).MemTableEh.FieldByName('id_obj').AsLargeInt, [loCaseInsensitive]);
        end;
   Caption := NameTableViewToStr(NameTableView);
+   ShowTab(TabSheet, Caption);
   DBGridEh1.Visible := true;
   quList.Close;
 end;

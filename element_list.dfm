@@ -10,7 +10,9 @@ object FormElementList: TFormElementList
   OldCreateOrder = False
   Position = poDefault
   Visible = True
+  OnActivate = FormActivate
   OnClose = FormClose
+  OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
   object panelTop: TPanel

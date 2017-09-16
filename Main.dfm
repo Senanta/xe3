@@ -128,6 +128,17 @@ object MainForm: TMainForm
       OnClick = ToolButton13Click
     end
   end
+  object PageControl1: TPageControl
+    Left = 0
+    Top = 263
+    Width = 590
+    Height = 23
+    Align = alBottom
+    Style = tsFlatButtons
+    TabOrder = 2
+    Visible = False
+    OnChange = PageControl1Change
+  end
   object MainMenu1: TMainMenu
     Images = ImageList1
     Left = 40
@@ -477,13 +488,11 @@ object MainForm: TMainForm
     object actOSV: TAction
       Category = 'Reports'
       Caption = #1054#1073#1086#1088#1086#1090#1085#1086'-'#1089#1072#1083#1100#1076#1086#1074#1072#1103' '#1074#1077#1076#1086#1084#1086#1089#1090#1100
-      ImageIndex = 60
       OnExecute = actOSVExecute
     end
     object actOSV_ACC: TAction
       Category = 'Reports'
       Caption = #1054#1073#1086#1088#1086#1090#1085#1086'-'#1089#1072#1083#1100#1076#1086#1074#1072#1103' '#1087#1086' '#1089#1095#1077#1090#1091
-      ImageIndex = 61
       OnExecute = actOSV_ACCExecute
     end
     object actCardAcc: TAction
@@ -564,7 +573,7 @@ object MainForm: TMainForm
     Left = 104
     Top = 200
     Bitmap = {
-      494C010141008001A40110001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C01014100B001B00110001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000001001000001002000000000000010
       0100000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000

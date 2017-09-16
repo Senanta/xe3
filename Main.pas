@@ -135,6 +135,7 @@ type
     N37: TMenuItem;
     N38: TMenuItem;
     N39: TMenuItem;
+    PageControl1: TPageControl;
     procedure FormCreate(Sender: TObject);
     procedure actDictionaryExecute(Sender: TObject);
     procedure actImportExecute(Sender: TObject);
@@ -151,6 +152,7 @@ type
     procedure v_Headers_Execute(Sender: TObject);
     procedure v_SetPricesExecute(Sender: TObject);
     procedure actOSV_ACCExecute(Sender: TObject);
+    procedure PageControl1Change(Sender: TObject);
   private
     { Private declarations }
   public
@@ -212,6 +214,11 @@ end;
 procedure TMainForm.HelpAbout1Execute(Sender: TObject);
 begin
   AboutBox.ShowModal;
+end;
+
+procedure TMainForm.PageControl1Change(Sender: TObject);
+begin
+  ((Sender as TPageControl).ActivePage.Owner as TForm).BringToFront;
 end;
 
 procedure TMainForm.ActionExecute(Sender: TObject);

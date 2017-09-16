@@ -18,7 +18,8 @@ uses
   import_dbase_iii in 'import_dbase_iii.pas' {fmImport},
   report_osv in 'report_osv.pas' {fmReport_Osv},
   set_price in 'set_price.pas' {fmSetPrice},
-  report_osv_acc in 'report_osv_acc.pas' {fmReportOsv_Acc};
+  report_osv_acc in 'report_osv_acc.pas' {fmReportOsv_Acc},
+  bottom_panel in 'bottom_panel.pas';
 
 {$R *.RES}
 

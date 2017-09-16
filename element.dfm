@@ -9,8 +9,10 @@ object FormElement: TFormElement
   FormStyle = fsMDIChild
   OldCreateOrder = False
   Visible = True
+  OnActivate = FormActivate
   OnClose = FormClose
   OnCloseQuery = FormCloseQuery
+  OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
   object PanelTop: TPanel

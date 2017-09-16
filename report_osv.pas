@@ -7,7 +7,7 @@ uses
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.Mask, RxToolEdit, Vcl.Buttons,
   Vcl.ExtCtrls, DateUtils, DBGridEhGrouping, ToolCtrlsEh, DBGridEhToolCtrls, DynVarsEh,
   MemTableDataEh, Data.DB, MemTableEh, Data.Win.ADODB, comObj, EhLibVCL, GridsEh, DBAxisGridsEh,
-  DBGridEh, DBCtrlsEh;
+  DBGridEh, DBCtrlsEh, Vcl.ComCtrls, Vcl.Menus;
 
 type
   TfmReport_Osv = class(TForm)
@@ -23,26 +23,48 @@ type
     bvl1: TBevel;
     DateEdit2: TDBDateTimeEditEh;
     Timer1: TTimer;
+    lbTime: TLabel;
+    pm1: TPopupMenu;
+    N1: TMenuItem;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
-    procedure DBGridEh1DblClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure Timer1Timer(Sender: TObject);
     procedure DateEdit1Change(Sender: TObject);
+    procedure FormActivate(Sender: TObject);
+    procedure N1Click(Sender: TObject);
+    procedure pm1Popup(Sender: TObject);
   private
     { Private declarations }
+    FTabSheet :TTabSheet; //Закладка на bottom_panel
   public
     { Public declarations }
+        property TabSheet: TTabSheet read FTabSheet write FTabSheet;
     procedure DataInit;
   end;
 
 var
   fmReport_Osv: TfmReport_Osv;
-
+  RTimeSQL :double;
 implementation
-uses report_osv_acc;
+uses report_osv_acc, bottom_panel,data_module_sql;
 {$R *.dfm}
+
+function TimeSql(start :Boolean) :Double;
+begin
+  if start then
+  begin
+    RTimeSql :=GetTickCount;
+  end
+  else
+  begin
+    RTimeSql :=GetTickCount - RTimeSql;
+  end;
+  result :=RTimeSql;
+end;
+
 var
 fmReportOsv_Acc :TfmReportOsv_Acc;
+
 procedure TfmReport_Osv.DataInit;
 begin
   DBGridEh1.Visible := false;
@@ -50,6 +72,7 @@ begin
   Application.ProcessMessages;
   MemTableEh.ReadOnly :=false;
   quSaldo.Close;
+  TimeSql(true);
   //Обороты Дебет Кредит
   quSaldo.Parameters.ParamByName('d1').Value := DateEdit1.Value;
   quSaldo.Parameters.ParamByName('d2').Value := DateEdit2.Value;
@@ -60,7 +83,9 @@ begin
   quSaldo.Parameters.ParamByName('d6').Value := DateEdit1.Value;
  try
         try
-        quSaldo.Open;
+         quSaldo.Open;
+         lbTime.Caption :='данные получены:' + FloatToStr(TimeSql(false)/1000) + ' сек.';
+         lbTime.Visible := True;
           except
          on E :EOleException do
            begin
@@ -73,6 +98,7 @@ begin
          end;
   finally
     Screen.Cursor:=crDefault;
+    TimeSql(false);
  end;
   Application.ProcessMessages;
   MemTableEh.LoadFromDataSet(quSaldo, -1, lmCopy, false);
@@ -100,7 +126,7 @@ begin
   MemTableEh.ReadOnly :=true;
   DBGridEh1.Visible := true;
   Caption := 'Оборотно-сальдовая ведомость(' + DateToStr(DateEdit1.Value) + '-' + DateToStr(DateEdit2.Value)+')';
-
+  ShowTab(TabSheet, 'ОСВ:(' + DateToStr(DateEdit1.Value) + '-' + DateToStr(DateEdit2.Value)+')');
   quSaldo.Close;
 end;
 
@@ -109,9 +135,9 @@ begin
   DataInit;
 end;
 
-procedure TfmReport_Osv.DBGridEh1DblClick(Sender: TObject);
+procedure TfmReport_Osv.FormActivate(Sender: TObject);
 begin
-    fmReportOsv_Acc := TfmReportOsv_Acc.Create(Self);
+ ActivateTab(FTabSheet);
 end;
 
 procedure TfmReport_Osv.FormClose(Sender: TObject; var Action: TCloseAction);
@@ -123,10 +149,22 @@ procedure TfmReport_Osv.FormCreate(Sender: TObject);
 begin
   DateEdit1.OnChange := nil;
   DateEdit2.OnChange := nil;
-  DateEdit1.Value:=StartOfTheMonth(Now);
-  DateEdit2.Value:=EndOfTheMonth(Now);
+  DateEdit1.Value:=IncMonth(StartOfTheMonth(Now),-1);
+  DateEdit2.Value:=EndOfTheMonth(DateEdit1.Value);
   DateEdit1.OnChange := DateEdit1Change;
   DateEdit2.OnChange := DateEdit1Change;
+  FTabSheet :=AddTab(Self);
+end;
+
+procedure TfmReport_Osv.N1Click(Sender: TObject);
+begin
+ fmReportOsv_Acc := TfmReportOsv_Acc.Create(Self);
+ Application.ProcessMessages;
+end;
+
+procedure TfmReport_Osv.pm1Popup(Sender: TObject);
+begin
+ N1.Enabled := not MemTableEh.IsEmpty;
 end;
 
 procedure TfmReport_Osv.Timer1Timer(Sender: TObject);

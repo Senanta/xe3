@@ -36,7 +36,7 @@ type
     RTimeSQL :double;
 
 implementation
-uses element_sprav_obj, element_sprav_subj, refresh;
+uses element_sprav_obj, element_sprav_subj, refresh, bottom_panel;
 {$R *.dfm}
 function TimeSql(start :Boolean) :Double;
 begin
@@ -68,6 +68,7 @@ begin
   quList.Parameters.ParamByName('d1').Value := fd1;
   quList.Parameters.ParamByName('d2').Value := fd2;
   Caption := TypeDocToStr(Fdoc_type) + '(' + DateToStr(fd1) + '-' + DateToStr(fd2)+')';
+  ShowTab(TabSheet, TypeDocToStr(Fdoc_type));
   try
         try
           quList.Open;
@@ -110,8 +111,8 @@ begin
   inherited;
   DateEdit1.OnChange :=nil;
   DateEdit2.OnChange :=nil;
-  DateEdit1.Value:=StartOfTheMonth(Now);
-  DateEdit2.Value:=EndOfTheMonth(Now);
+  DateEdit1.Value:=IncMonth(StartOfTheMonth(Now),-1);
+  DateEdit2.Value:=EndOfTheMonth(DateEdit1.Value);
   Fd1 := DateEdit1.Value;
   Fd2 := DateEdit2.Value;
   DateEdit1.OnChange :=DateEdit1Change;

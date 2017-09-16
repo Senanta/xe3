@@ -50,8 +50,10 @@ object fmSetPrice: TfmSetPrice
     0000ADC30000F3C30000FFE10000FFE10000FFF00000FFF00000FFF90000}
   OldCreateOrder = False
   Visible = True
+  OnActivate = FormActivate
   OnClose = FormClose
   OnCloseQuery = FormCloseQuery
+  OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
   object PanelBottom: TPanel

@@ -8,7 +8,7 @@ uses
   Vcl.ActnList, Vcl.ExtCtrls, MemTableDataEh, Data.DB, DBGridEhGrouping, ToolCtrlsEh,
   DBGridEhToolCtrls, DynVarsEh, EhLibVCL, GridsEh, DBAxisGridsEh, DBGridEh, ComObj,
   Data.Win.ADODB, MemTableEh, DateUtils, RxToolEdit, RxDBCtrl, RxDBComb, RxLookup, RxCtrls,
-  EhLibMTE, DBLookupEh;
+  EhLibMTE, DBLookupEh, Vcl.ComCtrls;
 
 type
   TfmSetPrice = class(TForm)
@@ -49,6 +49,8 @@ type
     procedure DateEdit1Change(Sender: TObject);
     procedure MemTableEhAfterInsert(DataSet: TDataSet);
     procedure DBLookupComboboxEh1Change(Sender: TObject);
+    procedure FormActivate(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
 
   private
     FID         :Int64;
@@ -59,9 +61,11 @@ type
     FIsChange   :Boolean;
     FIsCopied     :Boolean;
     FNameTableView :String; // Имя вьюва или таблицы для выбора записи с ID = FID
+    FTabSheet :TTabSheet; //Закладка на bottom_panel
   public
     { Public declarations }
     property ID         :Int64 read FID write FID default 0;
+    property TabSheet: TTabSheet read FTabSheet write FTabSheet;
 //    property ID_Type         :Int64 read FID_Type write FID_Type;
     property Data :TDateTime read FData write FData;
     property PriceName       :String read FPriceName write FPriceName;
@@ -80,7 +84,7 @@ implementation
 
 {$R *.dfm}
 
-uses data_module_sql, element_list_sprav,refresh;
+uses data_module_sql, element_list_sprav,refresh,bottom_panel;
  Var
  fmElementListSprav :TFormElementListSprav;
 procedure TfmSetPrice.ActionCloseExecute(Sender: TObject);
@@ -103,6 +107,11 @@ end;
 procedure TfmSetPrice.ActionSaveUpdate(Sender: TObject);
 begin
   (Sender as TAction).Enabled := FIsChange;
+end;
+
+procedure TfmSetPrice.FormActivate(Sender: TObject);
+begin
+ ActivateTab(FTabSheet);
 end;
 
 procedure TfmSetPrice.FormClose(Sender: TObject; var Action: TCloseAction);
@@ -137,6 +146,11 @@ begin
   end
  else
   CanClose := true;
+end;
+
+procedure TfmSetPrice.FormCreate(Sender: TObject);
+begin
+   FTabSheet :=AddTab(Self);
 end;
 
 procedure TfmSetPrice.MemTableEhAfterEdit(DataSet: TDataSet);
@@ -243,7 +257,7 @@ begin
 
  if IsCopied then FID :=-1; //Если был запрос на копирование
  Name := 'Установка цен' + ': ' + ' ' + FPriceName + ' на Дату ' + DateToStr(FData);
-
+ ShowTab(TabSheet, 'Установка цен' + ': ' + ' ' + FPriceName);
  MemTableEh.LoadFromDataSet(quPrices, -1, lmCopy, false);
  if (not IsCopied) and (FID =-1) then //Если новый и не добавлен копированием
     begin

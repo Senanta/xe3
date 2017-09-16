@@ -37,18 +37,10 @@ inherited FormElementListDoc: TFormElementListDoc
     000000000000000000000000000000000000000000000000000000000000FFFF
     0000FE7F0000FC3F0000F81F0000F00F0000E0070000C0030000800100000003
     000000070000000F000000070000000300001063000038FF00007DFF0000}
-  OnCreate = FormCreate
-  ExplicitWidth = 641
-  ExplicitHeight = 326
   PixelsPerInch = 96
   TextHeight = 13
   inherited panelTop: TPanel
     inherited ControlBar1: TControlBar
-      inherited ToolBar1: TToolBar
-        inherited ToolButton1: TToolButton
-          ExplicitWidth = 60
-        end
-      end
       inherited ToolBar2: TToolBar
         Width = 411
         ExplicitWidth = 411

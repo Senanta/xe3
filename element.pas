@@ -36,6 +36,8 @@ type
     procedure ActionSaveExecute(Sender: TObject);
     procedure ActionCloseExecute(Sender: TObject);
     procedure ActionOkExecute(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+    procedure FormActivate(Sender: TObject);
   private
     { Private declarations }
     FID         :Int64;
@@ -43,10 +45,12 @@ type
     FIsChange   :Boolean;
     FIsCopied     :Boolean;
     FNameTableView :String; // Имя вьюва или таблицы для выбора записи с ID = FID
+    FTabSheet :TTabSheet; //Закладка на bottom_panel
   public
     { Public declarations }
     property ID         :Int64 read FID write FID default 0;
     property Name       :String read FName write SetNameElement;
+    property TabSheet: TTabSheet read FTabSheet write FTabSheet;
     property NameTableView         :string read FNameTableView write FNameTableView;
     property IsChange   :Boolean read FIsChange write SetIsChange default false;
     property IsCopied   :Boolean read FIsCopied write FIsCopied default false;
@@ -57,7 +61,7 @@ type
   end;
 
 implementation
-uses data_module_sql, refresh;
+uses data_module_sql, refresh, bottom_panel;
 {$R *.dfm}
 
 procedure TFormElement.ActionCloseExecute(Sender: TObject);
@@ -80,6 +84,11 @@ end;
 procedure TFormElement.ActionSaveUpdate(Sender: TObject);
 begin
   (Sender as TAction).Enabled := FIsChange;
+end;
+
+procedure TFormElement.FormActivate(Sender: TObject);
+begin
+ ActivateTab(FTabSheet);
 end;
 
 procedure TFormElement.FormClose(Sender: TObject; var Action: TCloseAction);
@@ -116,6 +125,11 @@ begin
   end
  else
   CanClose := true;
+end;
+
+procedure TFormElement.FormCreate(Sender: TObject);
+begin
+  FTabSheet :=AddTab(Self);
 end;
 
 procedure TFormElement.cmdInsert;
@@ -199,7 +213,7 @@ begin
  quElement.Open;
  if IsCopied then FID :=-1; //Если был запрос на копирование
  Name := quElement.FieldByName('Code').AsString + ' ' + quElement.FieldByName('Name').AsString;
-
+ ShowTab(TabSheet, Copy(quElement.FieldByName('Name').AsString, 1, 17)+'...');
  MemTableEh.LoadFromDataSet(quElement, -1, lmCopy, false);
  if (not IsCopied) and (FID =-1) then //Если новый и не добавлен копированием
     begin
